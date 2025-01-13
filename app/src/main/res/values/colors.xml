@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="main_blue">#3772E7</color>
+    <color name="light_blue">#3772E7</color>
+    <color name="main_text">#1A1B22</color>
+    <color name="switcher_track">#E6E8EB</color>
+    <color name="switcher_not_active">#AEAFB4</color>
 </resources>

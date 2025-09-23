@@ -1,9 +1,23 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.PlaylistMaker" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/main_blue</item>
+
+        <!-- Track when switch is OFF -->
+
+        <!-- Track when switch is ON -->
+        <item name="trackColorActive">@color/light_blue</item>
+
+        <!-- Thumb color when NOT activated -->
+<item name="colorOnSurface">@color/switcher_not_active</item>
+        <!-- Thumb color when activated -->
+        <item name="colorControlActivated">@color/main_blue</item>
+
+
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
 </resources>
+

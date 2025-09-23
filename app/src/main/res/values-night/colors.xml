@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="main_blue">#3772E7</color>
+    <color name="light_blue">#3772E7</color>
+
+    <color name="background">#1A1B22</color>
+    <color name="header_text">#FFFFFFFF</color>
+    <color name="main_text">#FFFFFFFF</color>
+    <color name="switcher_track">#E6E8EB</color>
+    <color name="switcher_not_active">#AEAFB4</color>
+    <color name="settings_icon_color">#FFFFFFFF</color>
+    <color name="back_color">#FFFFFFFF</color>
+    <color name="main_activity_background">#FF000000</color>
+    <color name="main_btn_txt_color">#FF000000</color>
+    <color name="search_background">#FFFFFFFF</color>
+    <color name="search_icon_color">#1A1B22</color>
+</resources>

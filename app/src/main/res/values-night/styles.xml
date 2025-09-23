@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MainButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/zero_dp</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/main_btn_txt_color</item>
+        <item name="android:textSize">@dimen/main_text_size</item>
+        <item name="iconTint">@color/main_btn_txt_color</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/little_indent</item>
+        <item name="cornerRadius">@dimen/radius_btn</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
+    </style>
+
+    <style name="SettingsFrameStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">@dimen/common_padding</item>
+        <item name="android:paddingEnd">12dp</item>
+    </style>
+
+    <style name="SettingsTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginVertical">21dp</item>
+        <item name="android:textColor">@color/main_text</item>
+        <item name="android:textSize">@dimen/settings_text_size</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+    </style>
+
+    <style name="SettingsImageStyle">
+        <item name="android:layout_width">@dimen/icon_image_size</item>
+        <item name="android:layout_height">@dimen/icon_image_size</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:layout_marginTop">19dp</item>
+        <item name="android:layout_marginBottom">18dp</item>
+    </style>
+</resources>

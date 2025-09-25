@@ -78,12 +78,13 @@
                 />
 
         </FrameLayout>
-
-
-
-
-
     </LinearLayout>
 
+<androidx.recyclerview.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:id="@+id/track_recycler"
+    />
 
 </LinearLayout>

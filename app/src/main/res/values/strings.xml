@@ -12,4 +12,5 @@
     <string name="support_subject">"Message to the developers and developers of the Playlist Maker app"</string>
     <string name="support_email">kk.lolock@ya.ru</string>
     <string name="offer_link">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="duration_placeholder">0:00</string>
 </resources>

@@ -7,5 +7,6 @@
     <dimen name="settings_text_size">16sp</dimen>
     <dimen name="icon_image_size">24dp</dimen>
     <dimen name="little_indent">8dp</dimen>
+    <dimen name="middle_indent">12dp</dimen>
 
 </resources>

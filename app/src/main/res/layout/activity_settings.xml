@@ -23,101 +23,65 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="12dp"
             android:text="@string/settings"
-            android:textColor="@color/black"
+            android:textColor="@color/header_text"
             android:textSize="@dimen/main_text_size" />
 
 
     </LinearLayout>
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:paddingStart="@dimen/common_padding"
-        android:paddingEnd="12dp">
+        style="@style/SettingsFrameStyle"
+        android:layout_marginTop="24dp">
 
         <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switcher"
             android:layout_width="match_parent"
             android:layout_height="18dp"
-            app:switchMinWidth="35dp"
             android:layout_marginVertical="21dp"
             android:text="@string/dark_theme"
-            android:textColor="@color/black"
+            android:textColor="@color/main_text"
             android:textSize="@dimen/settings_text_size"
             android:theme="@style/Base.Theme.PlaylistMaker"
-           />
+            app:switchMinWidth="35dp" />
 
     </FrameLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/common_padding"
-        android:paddingEnd="12dp">
+    <FrameLayout style="@style/SettingsFrameStyle">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="21dp"
-            android:text="@string/share_the_app"
-            android:textColor="@color/black"
-            android:textSize="@dimen/settings_text_size" />
+            style="@style/SettingsTextStyle"
+            android:text="@string/share_the_app" />
 
         <ImageView
-            android:layout_width="@dimen/icon_image_size"
-            android:layout_height="@dimen/icon_image_size"
-            android:layout_gravity="end"
-            android:layout_marginTop="19dp"
-            android:layout_marginBottom="18dp"
+            android:id="@+id/share_btn"
+            style="@style/SettingsImageStyle"
             android:src="@drawable/ic_share" />
 
     </FrameLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/common_padding"
-        android:paddingEnd="12dp">
+    <FrameLayout style="@style/SettingsFrameStyle">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="21dp"
-            android:text="@string/write_to_support"
-            android:textColor="@color/black"
-            android:textSize="@dimen/settings_text_size" />
+            style="@style/SettingsTextStyle"
+            android:text="@string/write_to_support" />
 
         <ImageView
-            android:layout_width="@dimen/icon_image_size"
-            android:layout_height="@dimen/icon_image_size"
-            android:layout_gravity="end"
-            android:layout_marginTop="19dp"
-            android:layout_marginBottom="18dp"
+            android:id="@+id/support_btn"
+            style="@style/SettingsImageStyle"
             android:src="@drawable/ic_support" />
 
 
     </FrameLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/common_padding"
-        android:paddingEnd="12dp">
+    <FrameLayout style="@style/SettingsFrameStyle">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="21dp"
-            android:text="@string/user_agreement"
-            android:textColor="@color/black"
-            android:textSize="@dimen/settings_text_size" />
+            style="@style/SettingsTextStyle"
+            android:text="@string/user_agreement" />
 
         <ImageView
-            android:layout_width="@dimen/icon_image_size"
-            android:layout_height="@dimen/icon_image_size"
-            android:layout_gravity="end"
-            android:layout_marginTop="19dp"
-            android:layout_marginBottom="18dp"
+            android:id="@+id/agreement_btn"
+            style="@style/SettingsImageStyle"
             android:src="@drawable/ic_agreement" />
 
     </FrameLayout>

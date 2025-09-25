@@ -8,4 +8,8 @@
     <string name="share_the_app">Поделиться приложением</string>
     <string name="write_to_support">Написать в поддерждку</string>
     <string name="user_agreement">Пользовательское соглашение</string>
+    <string name="support_msg">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="support_subject">"Сообщение разработчикам и разработчицам приложения Playlist Maker"</string>
+    <string name="support_email">kk.lolock@ya.ru</string>
+    <string name="offer_link">https://yandex.ru/legal/practicum_offer/</string>
 </resources>

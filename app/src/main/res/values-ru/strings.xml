@@ -13,4 +13,8 @@
     <string name="support_email">kk.lolock@ya.ru</string>
     <string name="offer_link">https://yandex.ru/legal/practicum_offer/</string>
     <string name="duration_placeholder">0:00</string>
+    <string name="refresh">Обновить</string>
+    <string name="nothing_was_found">Ничего не нашлось</string>
+    <string name="error_text">Проблемы со связью \n\n Загрузка не удалась. Проверьте подключение к интернету.</string>
+
 </resources>

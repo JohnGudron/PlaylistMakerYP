@@ -44,4 +44,10 @@
         <item name="android:layout_marginTop">19dp</item>
         <item name="android:layout_marginBottom">18dp</item>
     </style>
+
+    <style name="BadResponseTextStyle">
+        <item name="android:textSize">@dimen/bad_response_text</item>
+        <item name="android:textColor">@color/bad_response_text_color</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
 </resources>

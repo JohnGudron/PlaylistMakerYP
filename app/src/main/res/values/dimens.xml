@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="common_padding">16dp</dimen>
+    <dimen name="margin_24">16dp</dimen>
     <dimen name="zero_dp">16dp</dimen>
     <dimen name="radius_btn">16dp</dimen>
     <dimen name="main_text_size">22sp</dimen>
@@ -8,5 +9,6 @@
     <dimen name="icon_image_size">24dp</dimen>
     <dimen name="little_indent">8dp</dimen>
     <dimen name="middle_indent">12dp</dimen>
+    <dimen name="bad_response_text">19sp</dimen>
 
 </resources>

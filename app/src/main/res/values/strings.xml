@@ -13,4 +13,8 @@
     <string name="support_email">kk.lolock@ya.ru</string>
     <string name="offer_link">https://yandex.ru/legal/practicum_offer/</string>
     <string name="duration_placeholder">0:00</string>
+    <string name="api_base_url" translatable="false">https://itunes.apple.com</string>
+    <string name="refresh">Refresh</string>
+    <string name="nothing_was_found">Nothing was found</string>
+    <string name="error_text">Connection problems \n\n The download failed. Check your internet connection.</string>
 </resources>

@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 
 class SettingsActivity : AppCompatActivity() {
@@ -20,6 +19,8 @@ class SettingsActivity : AppCompatActivity() {
         val shareBtn = findViewById<ImageView>(R.id.share_btn)
         val supportBtn = findViewById<ImageView>(R.id.support_btn)
         val agreementBtn = findViewById<ImageView>(R.id.agreement_btn)
+
+        switcher.isChecked = getSharedPreferences(PREFERENCES, MODE_PRIVATE).getBoolean(DARK_THEME, false)
 
         shareBtn.setOnClickListener {
             val sendIntent = Intent().apply {
@@ -45,13 +46,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         switcher.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                delegate.applyDayNight()
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                delegate.applyDayNight()
-            }
+            (applicationContext as App).switchTheme(isChecked)
         }
 
     }

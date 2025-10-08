@@ -13,6 +13,7 @@
         <item name="android:background">@color/background</item>
 
 
+
         <!-- Thumb color when NOT activated -->
         <item name="colorOnSurface">@color/switcher_not_active</item>
         <!-- Thumb color when activated -->

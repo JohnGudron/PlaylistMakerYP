@@ -12,8 +12,8 @@
     <color name="switcher_not_active">#AEAFB4</color>
     <color name="settings_icon_color">#FFFFFFFF</color>
     <color name="back_color">#FFFFFFFF</color>
-    <color name="main_activity_background">#FF000000</color>
-    <color name="main_btn_txt_color">#FF000000</color>
+    <color name="main_activity_background">#1A1B22</color>
+    <color name="main_btn_txt_color">#1A1B22</color>
     <color name="search_background">#FFFFFFFF</color>
     <color name="search_icon_color">#1A1B22</color>
     <color name="track_arrow_color">#FFFFFFFF</color>

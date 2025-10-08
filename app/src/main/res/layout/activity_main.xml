@@ -8,6 +8,7 @@
     tools:context=".MainActivity"
     android:orientation="vertical"
     android:background="@color/main_activity_background"
+    android:backgroundTint="@color/main_activity_background"
     android:paddingHorizontal="@dimen/common_padding">
 
     <TextView

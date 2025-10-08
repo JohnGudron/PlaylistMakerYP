@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.api.ItunesApiService
 import com.example.playlistmaker.api.ItunesSearchResponse
 import com.example.playlistmaker.model.Track
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,6 +26,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 const val HISTORY = "history"
+const val TRACK = "track"
 
 class SearchActivity : AppCompatActivity() {
 
@@ -73,8 +76,18 @@ class SearchActivity : AppCompatActivity() {
         searchHistory = findViewById(R.id.search_history)
         historyApi = SearchHistory(sharedPrefs)
         historyRecycler = findViewById(R.id.history_recycler)
-        adapter = TrackAdapter(historyApi::add)
-        historyAdapter = TrackAdapter(historyApi::add)
+        adapter = TrackAdapter { track ->
+            val intent = Intent(this,MediaActivity::class.java)
+            intent.putExtra(TRACK, Gson().toJson(track))
+            startActivity(intent)
+            historyApi.add(track)
+        }
+        historyAdapter = TrackAdapter { track ->
+            val intent = Intent(this,MediaActivity::class.java)
+            intent.putExtra(TRACK, Gson().toJson(track))
+            startActivity(intent)
+            historyApi.add(track)
+        }
 
         input.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus && input.text.isEmpty() && historyApi.getHistory().isNotEmpty()) {

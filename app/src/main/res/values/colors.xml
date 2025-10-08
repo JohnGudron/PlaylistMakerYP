@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main_blue">#3772E7</color>
     <color name="light_blue">#3772E7</color>
+    <color name="some_gray">#AEAFB4</color>
 
     <color name="background">#FFFFFFFF</color>
     <color name="header_text">#1A1B22</color>
@@ -20,4 +21,10 @@
     <color name="track_arrow_color">#AEAFB4</color>
     <color name="track_name_color">#000000</color>
     <color name="bad_response_text_color">#1A1B22</color>
+
+
+    <color name="header_text_color_media">#1A1B22</color>
+
+
+
 </resources>

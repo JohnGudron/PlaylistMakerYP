@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.icu.text.SimpleDateFormat
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,7 +45,11 @@ class TrackViewHolder(view:View): RecyclerView.ViewHolder(view) {
             .load(track.artworkUrl100)
             .placeholder(R.drawable.ic_track_placeholder)
             .centerCrop()
-            .transform(RoundedCorners((2 * trackImg.context.resources.displayMetrics.density).toInt()))
+            .transform(RoundedCorners(
+                TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 8f, trackImg.context.resources.displayMetrics
+                ).toInt()
+            ))
             .into(trackImg)
         trackName.text = track.trackName
         trackArtist.text = track.artistName

@@ -4,12 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
@@ -33,6 +36,8 @@ class SearchActivity : AppCompatActivity() {
     private var searchText = ""
     private var lastResponse = ""
     private val history = mutableListOf<Track>()
+    private val handler = Handler(Looper.getMainLooper())
+    private var itemClickAllowed = true
 
     private lateinit var input: EditText
     private lateinit var clearButton: ImageView
@@ -47,6 +52,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyApi: SearchHistory
     private lateinit var historyRecycler: RecyclerView
     private lateinit var historyAdapter: TrackAdapter
+    private lateinit var progressBar: ProgressBar
+    private var searchRunnable: Runnable = Runnable { makeSearch(searchText) }
 
 
     private val tracks = ArrayList<Track>()
@@ -65,6 +72,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         sharedPrefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
+        progressBar = findViewById(R.id.progress_bar)
         input = findViewById(R.id.input)
         clearButton = findViewById(R.id.clear_btn)
         clearHistoryButton = findViewById(R.id.clear_history_btn)
@@ -77,16 +85,21 @@ class SearchActivity : AppCompatActivity() {
         historyApi = SearchHistory(sharedPrefs)
         historyRecycler = findViewById(R.id.history_recycler)
         adapter = TrackAdapter { track ->
-            val intent = Intent(this,MediaActivity::class.java)
-            intent.putExtra(TRACK, Gson().toJson(track))
-            startActivity(intent)
-            historyApi.add(track)
+            if (itemClickDebounce()) {
+                val intent = Intent(this,MediaActivity::class.java)
+                intent.putExtra(TRACK, Gson().toJson(track))
+                startActivity(intent)
+                historyApi.add(track)
+            }
+
         }
         historyAdapter = TrackAdapter { track ->
-            val intent = Intent(this,MediaActivity::class.java)
-            intent.putExtra(TRACK, Gson().toJson(track))
-            startActivity(intent)
-            historyApi.add(track)
+            if (itemClickDebounce()) {
+                val intent = Intent(this,MediaActivity::class.java)
+                intent.putExtra(TRACK, Gson().toJson(track))
+                startActivity(intent)
+                historyApi.add(track)
+            }
         }
 
         input.setOnFocusChangeListener { view, hasFocus ->
@@ -99,7 +112,14 @@ class SearchActivity : AppCompatActivity() {
         }
 
         input.setText(searchText)
-        input.doOnTextChanged { text, _, _, _ -> clearButton.visibility=clearButtonVisibility(text) }
+        input.doOnTextChanged { text, _, _, _ ->
+            searchText = text.toString()
+            clearButton.visibility=clearButtonVisibility(text)
+            searchDebounce()
+            showProgress()
+        }
+
+
         input.doAfterTextChanged { text ->
             searchText = text.toString()
             if (text.isNullOrEmpty()) {
@@ -118,9 +138,7 @@ class SearchActivity : AppCompatActivity() {
         historyAdapter.tracks = historyApi.getHistory()
         sharedPrefs.registerOnSharedPreferenceChangeListener { sharedPreferences, s ->
             historyAdapter.notifyDataSetChanged()
-
         }
-        //recycler.item
 
         clearButton.setOnClickListener {
             searchText = ""
@@ -176,21 +194,38 @@ class SearchActivity : AppCompatActivity() {
     private fun showErrorSearch() {
         recycler.visibility = View.GONE
         errorScreen.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
     }
 
     private fun showNothingFound() {
         recycler.visibility = View.GONE
         nothingFindScreen.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
     }
 
     private fun showHistoryView() {
         recycler.visibility = View.GONE
         searchHistory.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
     }
 
     private fun hideHistoryView() {
         recycler.visibility = View.VISIBLE
         searchHistory.visibility = View.GONE
+        progressBar.visibility = View.GONE
+    }
+
+    private fun showProgress() {
+        recycler.visibility = View.GONE
+        searchHistory.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+        nothingFindScreen.visibility = View.GONE
+    }
+
+    private fun showRecycler() {
+        recycler.visibility = View.VISIBLE
+        searchHistory.visibility = View.GONE
+        progressBar.visibility = View.GONE
     }
 
     private fun makeSearch(str: String) {
@@ -206,6 +241,7 @@ class SearchActivity : AppCompatActivity() {
                         if (response.body()?.results?.isNotEmpty() == true) {
                             tracks.addAll(response.body()?.results!!)
                             adapter.notifyDataSetChanged()
+                            showRecycler()
                         } else showNothingFound()
 
                     } else {
@@ -221,7 +257,26 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY )
+
+    // удаляем запланированные отправки запроса
+        // отложенно отправляем новый поисковый запрос
+    }
+
+    private fun itemClickDebounce(): Boolean {
+        val cur = itemClickAllowed
+        if (itemClickAllowed) {
+            itemClickAllowed = false
+            handler.postDelayed({itemClickAllowed = true}, ITEM_CLICK_DEBOUNCE)
+        }
+        return cur
+    }
+
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
+        const val SEARCH_DEBOUNCE_DELAY = 1500L
+        const val ITEM_CLICK_DEBOUNCE = 1000L
     }
 }

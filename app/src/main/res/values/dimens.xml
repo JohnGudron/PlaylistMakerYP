@@ -3,6 +3,9 @@
     <dimen name="common_padding">16dp</dimen>
     <dimen name="margin_24">24dp</dimen>
     <dimen name="margin_18">18dp</dimen>
+    <dimen name="margin_12">12dp</dimen>
+
+
     <dimen name="zero_dp">16dp</dimen>
     <dimen name="radius_btn">16dp</dimen>
     <dimen name="main_text_size">22sp</dimen>
@@ -11,5 +14,8 @@
     <dimen name="little_indent">8dp</dimen>
     <dimen name="middle_indent">12dp</dimen>
     <dimen name="bad_response_text">19sp</dimen>
+    <dimen name="sp_22">22sp</dimen>
+    <dimen name="sp_14">14sp</dimen>
+    <dimen name="sp_13">13sp</dimen>
 
 </resources>

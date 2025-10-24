@@ -19,4 +19,6 @@
     <color name="track_arrow_color">#FFFFFFFF</color>
     <color name="track_name_color">#FFFFFFFF</color>
     <color name="bad_response_text_color">#FFFFFFFF</color>
+
+    <color name="header_text_color_media">#FFFFFFFF</color>
 </resources>

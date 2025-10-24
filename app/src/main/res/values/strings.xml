@@ -19,4 +19,10 @@
     <string name="error_text">Connection problems \n\n The download failed. Check your internet connection.</string>
     <string name="clear_history">Clear history</string>
     <string name="you_were_looking_for">You were looking for</string>
+    <string name="duration">Duration</string>
+    <string name="album">Album</string>
+    <string name="year">Year</string>
+    <string name="genre">Genre</string>
+    <string name="country">Country</string>
+    <string name="time_placeholder">0:00</string>
 </resources>

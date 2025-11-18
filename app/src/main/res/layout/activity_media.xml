@@ -12,7 +12,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MediaActivity"
+        tools:context=".ui.media.MediaActivity"
         android:background="@color/background">
 
         <ImageView
@@ -93,7 +93,8 @@
             app:layout_constraintStart_toEndOf="@id/playlist_btn"
             app:layout_constraintEnd_toStartOf="@id/favorite_btn"
             app:layout_constraintTop_toBottomOf="@id/artist_tv"
-            android:layout_marginTop="30dp"/>
+            android:layout_marginTop="30dp"
+            android:clickable="false"/>
 
         <ImageView
             android:id="@+id/favorite_btn"

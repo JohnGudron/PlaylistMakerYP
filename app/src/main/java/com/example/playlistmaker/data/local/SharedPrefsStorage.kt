@@ -1,24 +1,32 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.local
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.data.local.HISTORY
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 
-class SearchHistory(val sharedPrefs: SharedPreferences) {
+const val HISTORY = "history"
+
+class SharedPrefsStorage (private val sharedPrefs: SharedPreferences): LocalHistoryStorage {
 
     private val history = ArrayDeque<Track>()
     init {
         history.addAll(readFromPrefs())
     }
 
-    fun add (track: Track) {
+    override fun getHistory(): List<Track> = history
+
+    override fun clearHistory() {
+        sharedPrefs.edit().remove(HISTORY).apply()
+        history.clear()
+    }
+
+    override fun addTrackToHistory(track: Track) {
         if (track in history) {
             history.remove(track)
             history.addFirst(track)
         } else {
             if (history.size<10) {
-               history.addFirst(track)
+                history.addFirst(track)
             } else {
                 history.addFirst(track)
                 history.removeLast()
@@ -38,12 +46,4 @@ class SearchHistory(val sharedPrefs: SharedPreferences) {
         val json = sharedPrefs.getString(HISTORY, null) ?: return emptyArray()
         return Gson().fromJson(json, Array<Track>::class.java)
     }
-
-    fun clearHistory() {
-        sharedPrefs.edit().remove(HISTORY).apply()
-        history.clear()
-    }
-
-    fun getHistory() = history
-
 }

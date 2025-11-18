@@ -1,45 +1,38 @@
-package com.example.playlistmaker.ui.search
+package com.example.playlistmaker
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.Creator
-import com.example.playlistmaker.PREFERENCES
-import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.api.SearchHistoryInteractor
-import com.example.playlistmaker.domain.api.TracksInteractor
-import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.media.MediaActivity
+import com.example.playlistmaker.api.ItunesApiService
+import com.example.playlistmaker.api.ItunesSearchResponse
+import com.example.playlistmaker.model.Track
 import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-
+const val HISTORY = "history"
 const val TRACK = "track"
 
 class SearchActivity : AppCompatActivity() {
 
-    private val searchInteractor = Creator.provideTracksInteractor()
-    private lateinit var searchHistoryInteractor: SearchHistoryInteractor
-
     private var searchText = ""
     private var lastResponse = ""
-    private var history = listOf<Track>()
-    private val handler = Handler(Looper.getMainLooper())
-    private var itemClickAllowed = true
+    private val history = mutableListOf<Track>()
 
     private lateinit var input: EditText
     private lateinit var clearButton: ImageView
@@ -50,24 +43,28 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var nothingFindScreen: View
     private lateinit var updateBtn: Button
     private lateinit var searchHistory: View
-    private lateinit var historyRecycler: RecyclerView
-    private lateinit var progressBar: ProgressBar
-
-    private lateinit var historyAdapter: TrackAdapter
     private lateinit var sharedPrefs: SharedPreferences
-    //private lateinit var historyApi: SearchHistory
-    private var searchRunnable: Runnable = Runnable { makeSearch(searchText) }
+    private lateinit var historyApi: SearchHistory
+    private lateinit var historyRecycler: RecyclerView
+    private lateinit var historyAdapter: TrackAdapter
 
 
     private val tracks = ArrayList<Track>()
     private lateinit var adapter: TrackAdapter
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl("https://itunes.apple.com")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val itunesService = retrofit.create(ItunesApiService::class.java)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
         sharedPrefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
-        progressBar = findViewById(R.id.progress_bar)
         input = findViewById(R.id.input)
         clearButton = findViewById(R.id.clear_btn)
         clearHistoryButton = findViewById(R.id.clear_history_btn)
@@ -77,43 +74,23 @@ class SearchActivity : AppCompatActivity() {
         nothingFindScreen = findViewById(R.id.nothing_find_screen)
         updateBtn = findViewById(R.id.update_btn)
         searchHistory = findViewById(R.id.search_history)
-        //historyApi = SearchHistory(sharedPrefs)
-        searchHistoryInteractor = Creator.provideSearchHistoryInteractor(getSharedPreferences(PREFERENCES, MODE_PRIVATE))
+        historyApi = SearchHistory(sharedPrefs)
         historyRecycler = findViewById(R.id.history_recycler)
-
-        searchHistoryInteractor.getSearchHistory(object : SearchHistoryInteractor.SearchHistoryConsumer {
-            override fun consume(searchHistory: List<Track>) {
-                history = searchHistory
-            }
-        })
-
         adapter = TrackAdapter { track ->
-            if (itemClickDebounce()) {
-                val intent = Intent(this, MediaActivity::class.java)
-                intent.putExtra(TRACK, Gson().toJson(track))
-                startActivity(intent)
-                //historyApi.add(track)
-                searchHistoryInteractor.addTrackToHistory(track)
-            }
-
+            val intent = Intent(this,MediaActivity::class.java)
+            intent.putExtra(TRACK, Gson().toJson(track))
+            startActivity(intent)
+            historyApi.add(track)
         }
         historyAdapter = TrackAdapter { track ->
-            if (itemClickDebounce()) {
-                val intent = Intent(this, MediaActivity::class.java)
-                intent.putExtra(TRACK, Gson().toJson(track))
-                startActivity(intent)
-                //historyApi.add(track)
-                searchHistoryInteractor.addTrackToHistory(track)
-            }
+            val intent = Intent(this,MediaActivity::class.java)
+            intent.putExtra(TRACK, Gson().toJson(track))
+            startActivity(intent)
+            historyApi.add(track)
         }
 
         input.setOnFocusChangeListener { view, hasFocus ->
-            searchHistoryInteractor.getSearchHistory(object : SearchHistoryInteractor.SearchHistoryConsumer {
-                override fun consume(searchHistory: List<Track>) {
-                    history = searchHistory
-                }
-            })
-            if (hasFocus && input.text.isEmpty() && history.isNotEmpty()) {
+            if (hasFocus && input.text.isEmpty() && historyApi.getHistory().isNotEmpty()) {
                 showHistoryView()
             } else {
                 recycler.visibility = View.VISIBLE
@@ -122,14 +99,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         input.setText(searchText)
-        input.doOnTextChanged { text, _, _, _ ->
-            searchText = text.toString()
-            clearButton.visibility=clearButtonVisibility(text)
-            searchDebounce()
-            showProgress()
-        }
-
-
+        input.doOnTextChanged { text, _, _, _ -> clearButton.visibility=clearButtonVisibility(text) }
         input.doAfterTextChanged { text ->
             searchText = text.toString()
             if (text.isNullOrEmpty()) {
@@ -145,10 +115,12 @@ class SearchActivity : AppCompatActivity() {
 
         historyRecycler.adapter = historyAdapter
         historyRecycler.layoutManager = LinearLayoutManager(this)
-        historyAdapter.tracks = history.toMutableList()
+        historyAdapter.tracks = historyApi.getHistory()
         sharedPrefs.registerOnSharedPreferenceChangeListener { sharedPreferences, s ->
             historyAdapter.notifyDataSetChanged()
+
         }
+        //recycler.item
 
         clearButton.setOnClickListener {
             searchText = ""
@@ -162,7 +134,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearHistoryButton.setOnClickListener {
-            searchHistoryInteractor.clearSearchHistory()
+            historyApi.clearHistory()
             hideHistoryView()
         }
 
@@ -204,76 +176,52 @@ class SearchActivity : AppCompatActivity() {
     private fun showErrorSearch() {
         recycler.visibility = View.GONE
         errorScreen.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
     }
 
     private fun showNothingFound() {
         recycler.visibility = View.GONE
         nothingFindScreen.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
     }
 
     private fun showHistoryView() {
         recycler.visibility = View.GONE
         searchHistory.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
     }
 
     private fun hideHistoryView() {
         recycler.visibility = View.VISIBLE
         searchHistory.visibility = View.GONE
-        progressBar.visibility = View.GONE
-    }
-
-    private fun showProgress() {
-        recycler.visibility = View.GONE
-        searchHistory.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
-        nothingFindScreen.visibility = View.GONE
-    }
-
-    private fun showRecycler() {
-        recycler.visibility = View.VISIBLE
-        searchHistory.visibility = View.GONE
-        progressBar.visibility = View.GONE
     }
 
     private fun makeSearch(str: String) {
         lastResponse = str
         if (str.isNotEmpty()) {
-
-            searchInteractor.searchTracks(str, object : TracksInteractor.TracksConsumer {
-                override fun consume(foundTracks: List<Track>) {
-                    handler.post {
+            itunesService.searchTracks(str).enqueue(object : Callback<ItunesSearchResponse> {
+                override fun onResponse(
+                    call: Call<ItunesSearchResponse>,
+                    response: Response<ItunesSearchResponse>
+                ) {
+                    if (response.code() == 200) {
                         tracks.clear()
-                        if (foundTracks.isNotEmpty()) {
-                            tracks.addAll(foundTracks)
+                        if (response.body()?.results?.isNotEmpty() == true) {
+                            tracks.addAll(response.body()?.results!!)
                             adapter.notifyDataSetChanged()
-                            showRecycler()
                         } else showNothingFound()
+
+                    } else {
+                        showErrorSearch()
                     }
                 }
+
+                override fun onFailure(call: Call<ItunesSearchResponse>, t: Throwable) {
+                    showErrorSearch()
+                }
+
             })
         }
     }
 
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY )
-    }
-
-    private fun itemClickDebounce(): Boolean {
-        val cur = itemClickAllowed
-        if (itemClickAllowed) {
-            itemClickAllowed = false
-            handler.postDelayed({itemClickAllowed = true}, ITEM_CLICK_DEBOUNCE)
-        }
-        return cur
-    }
-
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
-        const val SEARCH_DEBOUNCE_DELAY = 1500L
-        const val ITEM_CLICK_DEBOUNCE = 1000L
     }
 }

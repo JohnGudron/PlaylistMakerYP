@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.settings
+package com.example.playlistmaker
 
 import android.content.Intent
 import android.net.Uri
@@ -6,10 +6,6 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import com.example.playlistmaker.App
-import com.example.playlistmaker.DARK_THEME
-import com.example.playlistmaker.PREFERENCES
-import com.example.playlistmaker.R
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

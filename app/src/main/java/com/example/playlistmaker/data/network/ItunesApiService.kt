@@ -1,6 +1,6 @@
-package com.example.playlistmaker.api
+package com.example.playlistmaker.data.network
 
-import com.example.playlistmaker.model.Track
+import com.example.playlistmaker.data.dto.ItunesSearchResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -12,4 +12,3 @@ interface ItunesApiService {
     ): Call<ItunesSearchResponse>
 }
 
-class ItunesSearchResponse (val resultCount: Int, val results: List<Track>)

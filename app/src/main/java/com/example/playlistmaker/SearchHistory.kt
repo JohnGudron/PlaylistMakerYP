@@ -1,7 +1,8 @@
 package com.example.playlistmaker
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.model.Track
+import com.example.playlistmaker.data.local.HISTORY
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 
 class SearchHistory(val sharedPrefs: SharedPreferences) {
@@ -11,7 +12,7 @@ class SearchHistory(val sharedPrefs: SharedPreferences) {
         history.addAll(readFromPrefs())
     }
 
-    fun add (track:Track) {
+    fun add (track: Track) {
         if (track in history) {
             history.remove(track)
             history.addFirst(track)

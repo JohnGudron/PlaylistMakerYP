@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.media
 
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
@@ -11,7 +11,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.model.Track
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.search.TRACK
 import com.google.gson.Gson
 import java.util.Locale
 
@@ -59,7 +61,7 @@ class MediaActivity : AppCompatActivity() {
 
         track = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
-        duration.text = dateFormat.format(track.trackTimeMillis)
+        duration.text = track.trackDuration
         album.text = track.collectionName
         year.text = track.releaseDate
         genre.text = track.primaryGenreName
@@ -80,7 +82,6 @@ class MediaActivity : AppCompatActivity() {
 
         playBtn.setOnClickListener {
             playBackControl()
-
         }
         preparePlayer()
     }
@@ -141,7 +142,6 @@ class MediaActivity : AppCompatActivity() {
             override fun run() {
                 currentTimeTv.text = dateFormat.format(mediaPlayer.currentPosition)
                 handler.postDelayed(this, DELAY_HALF_SECOND)
-
             }
         }
     }

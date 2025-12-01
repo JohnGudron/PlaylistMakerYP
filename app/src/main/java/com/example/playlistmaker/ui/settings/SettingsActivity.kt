@@ -3,30 +3,28 @@ package com.example.playlistmaker.ui.settings
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import com.example.playlistmaker.App
 import com.example.playlistmaker.DARK_THEME
 import com.example.playlistmaker.PREFERENCES
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val backBtn = findViewById<ImageView>(R.id.backBtn)
-        backBtn.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        binding.backBtn.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
-        val switcher = findViewById<SwitchCompat>(R.id.switcher)
-        val shareBtn = findViewById<ImageView>(R.id.share_btn)
-        val supportBtn = findViewById<ImageView>(R.id.support_btn)
-        val agreementBtn = findViewById<ImageView>(R.id.agreement_btn)
+        binding.switcher.isChecked = getSharedPreferences(PREFERENCES, MODE_PRIVATE).getBoolean(DARK_THEME, false)
 
-        switcher.isChecked = getSharedPreferences(PREFERENCES, MODE_PRIVATE).getBoolean(DARK_THEME, false)
-
-        shareBtn.setOnClickListener {
+        binding.shareBtn.setOnClickListener {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.share_link))
@@ -35,7 +33,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(sendIntent)
         }
 
-        supportBtn.setOnClickListener {
+        binding.supportBtn.setOnClickListener {
             val message = getString(R.string.support_msg)
             val shareIntent = Intent(Intent.ACTION_SENDTO)
             shareIntent.data = Uri.parse("mailto:")
@@ -45,13 +43,12 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(shareIntent)
         }
 
-        agreementBtn.setOnClickListener {
+        binding.agreementBtn.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.offer_link))))
         }
 
-        switcher.setOnCheckedChangeListener { _, isChecked ->
+        binding.switcher.setOnCheckedChangeListener { _, isChecked ->
             (applicationContext as App).switchTheme(isChecked)
         }
-
     }
 }

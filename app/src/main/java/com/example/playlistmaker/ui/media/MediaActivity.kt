@@ -6,12 +6,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.TRACK
 import com.google.gson.Gson
@@ -19,20 +18,9 @@ import java.util.Locale
 
 class MediaActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMediaBinding
     private lateinit var timeUpdater: Runnable
-    private lateinit var poster: ImageView
-    private lateinit var name: TextView
-    private lateinit var artist: TextView
-    private lateinit var playlistBtn: ImageView
-    private lateinit var playBtn: ImageView
-    private lateinit var favoriteBtn: ImageView
-    private lateinit var duration: TextView
-    private lateinit var album: TextView
-    private lateinit var year: TextView
-    private lateinit var genre: TextView
-    private lateinit var country: TextView
     private lateinit var track: Track
-    private lateinit var currentTimeTv: TextView
     private val mediaPlayer = MediaPlayer()
     private var mediaPlayerState = STATE_DEFAULT
     private val handler = Handler(Looper.getMainLooper())
@@ -40,47 +28,38 @@ class MediaActivity : AppCompatActivity() {
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_media)
 
-        val backBtn = findViewById<ImageView>(R.id.back_btn)
-        backBtn.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        super.onCreate(savedInstanceState)
+        binding = ActivityMediaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.backBtn.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
         timeUpdater = updateDurationTv()
-        poster = findViewById(R.id.song_poster)
-        duration = findViewById(R.id.duration_content_tv)
-        album = findViewById(R.id.album_content_tv)
-        year = findViewById(R.id.year_content_tv)
-        genre = findViewById(R.id.genre_content_tv)
-        country = findViewById(R.id.country_content_tv)
-        name = findViewById(R.id.name_tv)
-        artist = findViewById(R.id.artist_tv)
-        currentTimeTv = findViewById(R.id.time_tv)
-        playBtn = findViewById(R.id.play_btn)
 
-
+        // TODO exception below when navigation from main activity
         track = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
-        duration.text = track.trackDuration
-        album.text = track.collectionName
-        year.text = track.releaseDate
-        genre.text = track.primaryGenreName
-        country.text = track.country
-        name.text = track.trackName
-        artist.text = track.artistName
+        binding.durationContentTv.text = track.trackDuration
+        binding.albumContentTv.text = track.collectionName
+        binding.yearContentTv.text = track.releaseDate
+        binding.genreContentTv.text = track.primaryGenreName
+        binding.countryContentTv.text = track.country
+        binding.nameTv.text = track.trackName
+        binding.artistTv.text = track.artistName
 
-        Glide.with(poster.context)
+        Glide.with(binding.songPoster.context)
             .load(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
             .placeholder(R.drawable.ic_poster_placeholder_312)
             .centerCrop()
             .transform(RoundedCorners(
                     TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, 8f, poster.context.resources.displayMetrics
+                        TypedValue.COMPLEX_UNIT_DIP, 8f, binding.songPoster.context.resources.displayMetrics
                     ).toInt()
                 ))
-            .into(poster)
+            .into(binding.songPoster)
 
-        playBtn.setOnClickListener {
+        binding.playBtn.setOnClickListener {
             playBackControl()
         }
         preparePlayer()
@@ -91,13 +70,13 @@ class MediaActivity : AppCompatActivity() {
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             mediaPlayerState = STATE_PREPARED
-            playBtn.isClickable = true
+            binding.playBtn.isClickable = true
         }
         mediaPlayer.setOnCompletionListener {
             mediaPlayerState = STATE_PREPARED
             handler.removeCallbacks(timeUpdater)
-            playBtn.setImageResource(R.drawable.ic_play_btn_100)
-            currentTimeTv.text = getString(R.string.time_placeholder)
+            binding.playBtn.setImageResource(R.drawable.ic_play_btn_100)
+            binding.timeTv.text = getString(R.string.time_placeholder)
         }
     }
 
@@ -115,14 +94,14 @@ class MediaActivity : AppCompatActivity() {
     private fun startPlaying() {
         mediaPlayer.start()
         mediaPlayerState = STATE_PLAYING
-        playBtn.setImageResource(R.drawable.ic_pause_btn_100)
+        binding.playBtn.setImageResource(R.drawable.ic_pause_btn_100)
         handler.post(timeUpdater)
     }
 
     private fun pausePlaying() {
         mediaPlayer.pause()
         mediaPlayerState = STATE_PAUSED
-        playBtn.setImageResource(R.drawable.ic_play_btn_100)
+        binding.playBtn.setImageResource(R.drawable.ic_play_btn_100)
         handler.removeCallbacks(timeUpdater)
     }
 
@@ -140,7 +119,7 @@ class MediaActivity : AppCompatActivity() {
     private fun updateDurationTv(): Runnable {
         return object : Runnable {
             override fun run() {
-                currentTimeTv.text = dateFormat.format(mediaPlayer.currentPosition)
+                binding.timeTv.text = dateFormat.format(mediaPlayer.currentPosition)
                 handler.postDelayed(this, DELAY_HALF_SECOND)
             }
         }

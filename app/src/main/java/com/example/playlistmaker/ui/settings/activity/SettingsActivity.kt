@@ -1,24 +1,30 @@
-package com.example.playlistmaker.ui.settings
+package com.example.playlistmaker.ui.settings.activity
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.App
 import com.example.playlistmaker.DARK_THEME
 import com.example.playlistmaker.PREFERENCES
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
+
+    private lateinit var viewModel: SettingsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel = ViewModelProvider(this, SettingsViewModel.getFactory()).get(SettingsViewModel::class.java)
 
         binding.backBtn.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
 

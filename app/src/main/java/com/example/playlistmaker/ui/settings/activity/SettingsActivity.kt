@@ -1,14 +1,10 @@
 package com.example.playlistmaker.ui.settings.activity
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.App
-import com.example.playlistmaker.DARK_THEME
-import com.example.playlistmaker.PREFERENCES
-import com.example.playlistmaker.R
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 
@@ -24,33 +20,33 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this, SettingsViewModel.getFactory()).get(SettingsViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            SettingsViewModel.getFactory(
+                Creator.provideSharingInteractor(this),
+                Creator.provideSettingsInteractor()
+            )
+        ).get(SettingsViewModel::class.java)
+
+        viewModel?.observeTheme()?.observe(this) {
+            binding.switcher.isChecked = it.enableDarkTheme
+        }
 
         binding.backBtn.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
-        binding.switcher.isChecked = getSharedPreferences(PREFERENCES, MODE_PRIVATE).getBoolean(DARK_THEME, false)
+        //binding.switcher.isChecked = getSharedPreferences(PREFERENCES, MODE_PRIVATE).getBoolean(DARK_THEME, false)
 
         binding.shareBtn.setOnClickListener {
-            val sendIntent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.share_link))
-                type = "text/plain"
-            }
-            startActivity(sendIntent)
+            viewModel.shareApp()
         }
 
         binding.supportBtn.setOnClickListener {
-            val message = getString(R.string.support_msg)
-            val shareIntent = Intent(Intent.ACTION_SENDTO)
-            shareIntent.data = Uri.parse("mailto:")
-            shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_email)))
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_subject))
-            shareIntent.putExtra(Intent.EXTRA_TEXT, message)
-            startActivity(shareIntent)
+            viewModel.openSupport()
         }
 
         binding.agreementBtn.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.offer_link))))
+            viewModel.openTerms()
+            //startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.offer_link))))
         }
 
         binding.switcher.setOnCheckedChangeListener { _, isChecked ->

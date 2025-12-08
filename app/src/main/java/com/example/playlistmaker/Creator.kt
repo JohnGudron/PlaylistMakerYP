@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Context
 import android.content.SharedPreferences
 import com.example.playlistmaker.data.local.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.data.local.SharedPrefsStorage
@@ -11,6 +12,11 @@ import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.impl.SearchHistoryInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
+import com.example.playlistmaker.domain.settings.SettingsInteractor
+import com.example.playlistmaker.domain.settings.impl.SettingsInteractorImpl
+import com.example.playlistmaker.domain.sharing.ExternalNavigatorImpl
+import com.example.playlistmaker.domain.sharing.SharingInteractor
+import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 
 object Creator {
     private fun getTracksRepository(): TracksRepository {
@@ -27,5 +33,13 @@ object Creator {
 
     fun provideSearchHistoryInteractor(sharedPrefs: SharedPreferences): SearchHistoryInteractor {
         return SearchHistoryInteractorImpl(getSearchHistoryRepository(sharedPrefs))
+    }
+
+    fun provideSharingInteractor(context: Context): SharingInteractor {
+        return SharingInteractorImpl(ExternalNavigatorImpl(context), context )
+    }
+
+    fun provideSettingsInteractor(): SettingsInteractor {
+        return SettingsInteractorImpl()
     }
 }

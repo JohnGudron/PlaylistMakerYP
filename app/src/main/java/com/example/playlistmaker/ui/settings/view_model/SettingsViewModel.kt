@@ -18,14 +18,13 @@ import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 class SettingsViewModel(
     private val sharingInteractor: SharingInteractor,
     private val settingsInteractor: SettingsInteractor,
-    /*darkTheme: Boolean*/
 ) : ViewModel() {
 
-    private val darkThemeLiveData = MutableLiveData<ThemeSettings>()
+    private val darkThemeLiveData = MutableLiveData<ThemeSettings>(settingsInteractor.getThemeSettings())
     fun observeTheme(): LiveData<ThemeSettings> = darkThemeLiveData
 
     fun switchTheme(enableDarkTheme: Boolean) {
-                val newSettings = settingsInteractor.getThemeSettings().copy(enableDarkTheme = enableDarkTheme)
+        val newSettings = settingsInteractor.getThemeSettings().copy(enableDarkTheme = enableDarkTheme)
         settingsInteractor.updateThemeSetting(newSettings)
         darkThemeLiveData.postValue(newSettings)
     }
@@ -43,12 +42,10 @@ class SettingsViewModel(
     }
 
     companion object {
-        fun getFactory (sharingInteractor: SharingInteractor, settingsInteractor: SettingsInteractor): ViewModelProvider.Factory = viewModelFactory {
+        fun getFactory (): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                SettingsViewModel(sharingInteractor, settingsInteractor/*, settingsInteractor.getThemeSettings().enableDarkTheme*/)
                 val app = (this[APPLICATION_KEY] as Application)
-                SettingsViewModel(SharingInteractorImpl(ExternalNavigatorImpl(app),app), SettingsInteractorImpl())
-
+                SettingsViewModel(SharingInteractorImpl(ExternalNavigatorImpl(app),app), SettingsInteractorImpl(app))
             }
         }
     }

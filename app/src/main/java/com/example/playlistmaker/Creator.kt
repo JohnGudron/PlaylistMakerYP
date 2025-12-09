@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.playlistmaker.data.local.SearchHistoryRepositoryImpl
@@ -39,7 +40,7 @@ object Creator {
         return SharingInteractorImpl(ExternalNavigatorImpl(context), context )
     }
 
-    fun provideSettingsInteractor(): SettingsInteractor {
-        return SettingsInteractorImpl()
+    fun provideSettingsInteractor(app:Application): SettingsInteractor {
+        return SettingsInteractorImpl(app)
     }
 }

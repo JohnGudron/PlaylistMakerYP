@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.util
 
 import android.app.Application
 import android.content.Context
@@ -20,16 +20,16 @@ import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 
 object Creator {
-    private fun getTracksRepository(): TracksRepository {
-        return TracksRepositoryImpl(RetrofitNetworkClient())
+    private fun getTracksRepository(context: Context): TracksRepository {
+        return TracksRepositoryImpl(RetrofitNetworkClient(context))
     }
 
     private fun getSearchHistoryRepository(sharedPrefs: SharedPreferences): SearchHistoryRepository {
         return SearchHistoryRepositoryImpl(SharedPrefsStorage(sharedPrefs))
     }
 
-    fun provideTracksInteractor(): TracksInteractor {
-        return TracksInteractorImpl(getTracksRepository())
+    fun provideTracksInteractor(context: Context): TracksInteractor {
+        return TracksInteractorImpl(getTracksRepository(context))
     }
 
     fun provideSearchHistoryInteractor(sharedPrefs: SharedPreferences): SearchHistoryInteractor {

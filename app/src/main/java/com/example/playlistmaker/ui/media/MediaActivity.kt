@@ -12,7 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.search.TRACK
+import com.example.playlistmaker.ui.search.activity.TRACK
 import com.google.gson.Gson
 import java.util.Locale
 

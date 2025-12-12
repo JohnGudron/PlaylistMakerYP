@@ -6,32 +6,38 @@ import com.example.playlistmaker.data.dto.ItunesSearchRequest
 import com.example.playlistmaker.data.dto.ItunesSearchResponse
 import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.util.Resource
 import java.util.Locale
 
 class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRepository {
 
     private val dateFormat =  SimpleDateFormat("mm:ss", Locale.getDefault())
 
-    override fun searchTracks(expression: String): List<Track> {
+    override fun searchTracks(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(ItunesSearchRequest(expression))
-        if (response.resulCode == 200) {
-
-            return (response as ItunesSearchResponse).results.map {
-                Track(
-                    it.trackName,
-                    it.artistName,
-                    dateFormat.format(it.trackTimeMillis),
-                    it.artworkUrl100,
-                    it.trackId,
-                    it.collectionName,
-                    it.releaseDate,
-                    it.primaryGenreName,
-                    it.country,
-                    it.previewUrl,
-                )
+        return when (response.resulCode) {
+            -1 -> {
+                Resource.Error("Connection error")
             }
-        } else {
-            return emptyList()
+            200 -> {
+                return Resource.Success((response as ItunesSearchResponse).results.map {
+                    Track(
+                        it.trackName,
+                        it.artistName,
+                        dateFormat.format(it.trackTimeMillis),
+                        it.artworkUrl100,
+                        it.trackId,
+                        it.collectionName,
+                        it.releaseDate,
+                        it.primaryGenreName,
+                        it.country,
+                        it.previewUrl,
+                    )
+                })
+            }
+            else -> {
+                return Resource.Error("Server error")
+            }
         }
     }
 }

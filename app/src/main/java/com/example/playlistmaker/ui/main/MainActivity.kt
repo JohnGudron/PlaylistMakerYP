@@ -3,21 +3,21 @@ package com.example.playlistmaker.ui.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.ui.media.MediaActivity
-import com.example.playlistmaker.R
-import com.example.playlistmaker.ui.search.SearchActivity
-import com.example.playlistmaker.ui.settings.SettingsActivity
+import com.example.playlistmaker.databinding.ActivityMainBinding
+import com.example.playlistmaker.ui.media.activity.MediaActivity
+import com.example.playlistmaker.ui.search.activity.SearchActivity
+import com.example.playlistmaker.ui.settings.activity.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        val searchBtn = findViewById<Button>(R.id.searchBtn)
-        val mediaBtn = findViewById<Button>(R.id.mediaBtn)
-        val settingsBtn = findViewById<Button>(R.id.settingsBtn)
+    private lateinit var binding: ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val searchBtnOnClickListener: View.OnClickListener = object : View.OnClickListener {
             override fun onClick(p0: View?) {
@@ -25,13 +25,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        searchBtn.setOnClickListener (searchBtnOnClickListener)
+        binding.searchBtn.setOnClickListener (searchBtnOnClickListener)
 
-        mediaBtn.setOnClickListener {
+        binding.mediaBtn.setOnClickListener {
             startActivity(Intent(this@MainActivity, MediaActivity::class.java))
         }
 
-        settingsBtn.setOnClickListener {
+        binding.settingsBtn.setOnClickListener {
             startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
         }
     }

@@ -18,7 +18,6 @@ import com.example.playlistmaker.domain.api.SearchHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.search.TracksState
-import com.example.playlistmaker.ui.search.activity.SearchActivity
 import com.example.playlistmaker.util.Creator
 
 
@@ -34,19 +33,12 @@ class SearchViewModel(private val context: Context): ViewModel() {
     private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable = Runnable { makeSearch(searchText) }
     private var searchText = ""
-    private var lastResponse = ""
 
     private val stateLiveData = MutableLiveData<TracksState>()
     fun observeState(): LiveData<TracksState> = stateLiveData
 
     private val historyLiveData = MutableLiveData<List<Track>>()
     fun observeHistory(): LiveData<List<Track>> = historyLiveData
-
-    /*searchHistoryInteractor.getSearchHistory(object: SearchHistoryInteractor.SearchHistoryConsumer {
-        override fun consume(searchHistory: List<Track>) {
-            history.addAll(searchHistory)
-        }
-    })*/
 
     fun makeSearch(str: String) {
         if (str.isNotEmpty()) {
@@ -69,7 +61,6 @@ class SearchViewModel(private val context: Context): ViewModel() {
                                         errorMessage = context.getString(R.string.error_text),
                                     )
                                 )
-                                //showToast.postValue(errorMessage)
                             }
 
                             tracks.isEmpty() -> {
@@ -98,16 +89,13 @@ class SearchViewModel(private val context: Context): ViewModel() {
     fun searchDebounce(str: String) {
         searchText = str
         handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SearchActivity.SEARCH_DEBOUNCE_DELAY)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     fun addTrackToHistory(track: Track) {
         searchHistoryInteractor.addTrackToHistory(track,object : SearchHistoryInteractor.SearchHistoryConsumer {
             override fun consume(searchHistory: List<Track>) {
                 historyLiveData.postValue(searchHistory)
-                /*history.clear()
-                history.addAll(searchHistory)
-                historyAdapter.notifyDataSetChanged()*/
             }
         })
     }
@@ -132,15 +120,6 @@ class SearchViewModel(private val context: Context): ViewModel() {
         stateLiveData.postValue(state)
     }
 
-    /*private fun itemClickDebounce(): Boolean {
-        val cur = itemClickAllowed
-        if (itemClickAllowed) {
-            itemClickAllowed = false
-            handler.postDelayed({itemClickAllowed = true}, SearchActivity.ITEM_CLICK_DEBOUNCE)
-        }
-        return cur
-    }*/
-
     companion object {
 
         fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
@@ -149,9 +128,7 @@ class SearchViewModel(private val context: Context): ViewModel() {
             }
         }
 
-        const val SEARCH_TEXT = "SEARCH_TEXT"
         const val SEARCH_DEBOUNCE_DELAY = 1500L
-        const val ITEM_CLICK_DEBOUNCE = 1000L
     }
 
     override fun onCleared() {

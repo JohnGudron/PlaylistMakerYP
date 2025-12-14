@@ -35,14 +35,14 @@ class SharedPrefsStorage (private val sharedPrefs: SharedPreferences): LocalHist
         writeToPrefs(history.toTypedArray())
     }
 
-    fun writeToPrefs(tracks: Array<TrackDto>) {
+    private fun writeToPrefs(tracks: Array<TrackDto>) {
         val json = Gson().toJson(tracks)
         sharedPrefs.edit()
             .putString(HISTORY, json)
             .apply()
     }
 
-    fun readFromPrefs(): Array<TrackDto> {
+    private fun readFromPrefs(): Array<TrackDto> {
         val json = sharedPrefs.getString(HISTORY, null) ?: return emptyArray()
         return Gson().fromJson(json, Array<TrackDto>::class.java)
     }

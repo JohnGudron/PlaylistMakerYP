@@ -19,11 +19,7 @@ class PrefsStorageClient<T>(
     }
 
     override fun getData(): T? {
-        val dataJson = prefs.getString(dataKey, null)
-        if (dataJson == null) {
-            return null
-        } else {
-            return gson.fromJson(dataJson, type)
-        }
+        val dataJson = prefs.getString(dataKey, null) ?: return null
+        return gson.fromJson(dataJson, type)
     }
 }

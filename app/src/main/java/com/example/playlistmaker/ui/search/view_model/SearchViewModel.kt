@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.search.view_model
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
@@ -21,12 +20,12 @@ import com.example.playlistmaker.ui.search.TracksState
 import com.example.playlistmaker.util.Creator
 
 
-class SearchViewModel(private val context: Context): ViewModel() {
+class SearchViewModel(private val app: App): ViewModel() {
 
-    private val tracksInteractor = Creator.provideTracksInteractor(context)
+    private val tracksInteractor = Creator.provideTracksInteractor(app)
     private val searchHistoryInteractor =
         Creator.provideSearchHistoryInteractor(
-            context.getSharedPreferences(
+            app.getSharedPreferences(
                 PREFERENCES, MODE_PRIVATE
             )
         )
@@ -58,7 +57,7 @@ class SearchViewModel(private val context: Context): ViewModel() {
                             errorMessage != null -> {
                                 renderState(
                                     TracksState.Error(
-                                        errorMessage = context.getString(R.string.error_text),
+                                        errorMessage = app.getString(R.string.error_text),
                                     )
                                 )
                             }
@@ -66,7 +65,7 @@ class SearchViewModel(private val context: Context): ViewModel() {
                             tracks.isEmpty() -> {
                                 renderState(
                                     TracksState.Empty(
-                                        message = context.getString(R.string.nothing_was_found),
+                                        message = app.getString(R.string.nothing_was_found),
                                     )
                                 )
                             }

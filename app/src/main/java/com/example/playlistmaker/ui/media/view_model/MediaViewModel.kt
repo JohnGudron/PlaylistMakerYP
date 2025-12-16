@@ -4,18 +4,20 @@ import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.playlistmaker.ui.media.PlayerState
 import java.util.Locale
 
 class MediaViewModel(private val url: String): ViewModel() {
 
-    private val playerStateLiveData = MutableLiveData(STATE_DEFAULT)
-    fun observePlayerState(): LiveData<Int> = playerStateLiveData
+    private val playerStateLiveData = MutableLiveData(PlayerState.STATE_DEFAULT)
+    fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
 
     private val progressTimeLiveData = MutableLiveData("00:00")
     fun observeProgressTime(): LiveData<String> = progressTimeLiveData
@@ -35,34 +37,36 @@ class MediaViewModel(private val url: String): ViewModel() {
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            playerStateLiveData.postValue(STATE_PREPARED)
+            playerStateLiveData.postValue(PlayerState.STATE_PREPARED)
         }
         mediaPlayer.setOnCompletionListener {
-            playerStateLiveData.postValue(STATE_PREPARED)
+            playerStateLiveData.postValue(PlayerState.STATE_PREPARED)
             handler.removeCallbacks(timeUpdater)
         }
     }
 
     private fun startPlaying() {
         mediaPlayer.start()
-        playerStateLiveData.postValue(STATE_PLAYING)
+        playerStateLiveData.postValue(PlayerState.STATE_PLAYING)
         handler.post(timeUpdater)
     }
 
     fun pausePlaying() {
         mediaPlayer.pause()
-        playerStateLiveData.postValue(STATE_PAUSED)
+        playerStateLiveData.postValue(PlayerState.STATE_PAUSED)
         handler.removeCallbacks(timeUpdater)
     }
 
     fun playBackControl() {
         when(playerStateLiveData.value) {
-            STATE_PREPARED, STATE_PAUSED -> {
+            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> {
                 startPlaying()
             }
-            STATE_PLAYING -> {
+            PlayerState.STATE_PLAYING -> {
                 pausePlaying()
             }
+            else -> {
+                Log.d("PlayerState", "playBackControl: trying play/pause in default state")}
         }
     }
 
@@ -83,10 +87,6 @@ class MediaViewModel(private val url: String): ViewModel() {
             }
         }
 
-        const val STATE_DEFAULT = 0
-        const val STATE_PREPARED = 1
-        const val STATE_PLAYING = 2
-        const val STATE_PAUSED = 3
         const val DELAY_HALF_SECOND = 500L
     }
 

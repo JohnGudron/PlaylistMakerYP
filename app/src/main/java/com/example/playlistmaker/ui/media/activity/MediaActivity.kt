@@ -9,6 +9,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.media.PlayerState
 import com.example.playlistmaker.ui.media.view_model.MediaViewModel
 import com.example.playlistmaker.ui.search.activity.TRACK
 import com.google.gson.Gson
@@ -33,9 +34,9 @@ class MediaActivity : AppCompatActivity() {
         }
 
         viewModel.observePlayerState().observe(this) {
-            binding.playBtn.setImageResource(if (it == MediaViewModel.STATE_PLAYING) R.drawable.ic_pause_btn_100 else R.drawable.ic_play_btn_100)
-            binding.playBtn.isClickable = (it != MediaViewModel.STATE_DEFAULT)
-            if (it == MediaViewModel.STATE_PREPARED) binding.timeTv.text = getString(R.string.time_placeholder)
+            binding.playBtn.setImageResource(if (it == PlayerState.STATE_PLAYING) R.drawable.ic_pause_btn_100 else R.drawable.ic_play_btn_100)
+            binding.playBtn.isClickable = (it != PlayerState.STATE_DEFAULT)
+            if (it == PlayerState.STATE_PREPARED) binding.timeTv.text = getString(R.string.time_placeholder)
         }
 
         binding.backBtn.setOnClickListener { onBackPressedDispatcher.onBackPressed() }

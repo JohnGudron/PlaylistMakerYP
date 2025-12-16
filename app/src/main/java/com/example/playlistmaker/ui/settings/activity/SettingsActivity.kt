@@ -27,15 +27,15 @@ class SettingsActivity : AppCompatActivity() {
         binding.backBtn.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
         binding.shareBtn.setOnClickListener {
-            viewModel.shareApp()
+            viewModel.shareApp(this)
         }
 
         binding.supportBtn.setOnClickListener {
-            viewModel.openSupport()
+            viewModel.openSupport(this)
         }
 
         binding.agreementBtn.setOnClickListener {
-            viewModel.openTerms()
+            viewModel.openTerms(this)
         }
 
         binding.switcher.setOnCheckedChangeListener { _, isChecked ->

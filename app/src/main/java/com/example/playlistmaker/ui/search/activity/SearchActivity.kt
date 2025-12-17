@@ -46,13 +46,15 @@ class SearchActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, SearchViewModel.getFactory()).get(SearchViewModel::class.java)
 
         viewModel.observeState().observe(this) {
-            renderState(it)
+                renderState(it)
+               // historyAdapter.tracks = it.history.toMutableList()
+               // historyAdapter.notifyDataSetChanged()
         }
 
-        viewModel.observeHistory().observe(this) {
+        /*viewModel.observeHistory().observe(this) {
             historyAdapter.tracks = it.toMutableList()
             historyAdapter.notifyDataSetChanged()
-        }
+        }*/
 
         viewModel.getSearchHistory()
 
@@ -63,8 +65,9 @@ class SearchActivity : AppCompatActivity() {
 
         binding.input.setOnFocusChangeListener { _, hasFocus ->
                 viewModel.getSearchHistory()
-                if (hasFocus && binding.input.text.isEmpty() && !viewModel.observeHistory().value.isNullOrEmpty()) {
-                    showHistoryView()
+                val state = viewModel.observeState().value
+                if (hasFocus && binding.input.text.isEmpty() && state is TracksState.History) {
+                    showHistoryView(state.history)
                 } else {
                     hideHistoryView()
                 }
@@ -80,7 +83,9 @@ class SearchActivity : AppCompatActivity() {
         binding.input.doAfterTextChanged { text ->
                 searchText = text.toString()
                 if (text.isNullOrEmpty()) {
-                    showHistoryView()
+                    viewModel.getSearchHistory()
+                    val state = viewModel.observeState().value
+                    showHistoryView(if (state is TracksState.History) state.history else emptyList())
                 }
             }
 
@@ -163,10 +168,12 @@ class SearchActivity : AppCompatActivity() {
         binding.nothingFindScreen.visibility = View.VISIBLE
     }
 
-    private fun showHistoryView() {
+    private fun showHistoryView(tracks: List<Track>) {
         binding.trackRecycler.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         binding.searchHistory.visibility = View.VISIBLE
+        historyAdapter.tracks = tracks.toMutableList()
+        historyAdapter.notifyDataSetChanged()
 
     }
 
@@ -209,6 +216,7 @@ class SearchActivity : AppCompatActivity() {
             is TracksState.Error -> showErrorSearch()
             is TracksState.Content -> showRecycler(state.tracks)
             is TracksState.Loading -> showProgress()
+            is TracksState.History -> showHistoryView(state.history)
         }
     }
 

@@ -36,8 +36,8 @@ class SearchViewModel(private val app: App): ViewModel() {
     private val stateLiveData = MutableLiveData<TracksState>()
     fun observeState(): LiveData<TracksState> = stateLiveData
 
-    private val historyLiveData = MutableLiveData<List<Track>>()
-    fun observeHistory(): LiveData<List<Track>> = historyLiveData
+    //private val historyLiveData = MutableLiveData<List<Track>>()
+    //fun observeHistory(): LiveData<List<Track>> = historyLiveData
 
     fun makeSearch(str: String) {
         if (str.isNotEmpty()) {
@@ -94,7 +94,7 @@ class SearchViewModel(private val app: App): ViewModel() {
     fun addTrackToHistory(track: Track) {
         searchHistoryInteractor.addTrackToHistory(track,object : SearchHistoryInteractor.SearchHistoryConsumer {
             override fun consume(searchHistory: List<Track>) {
-                historyLiveData.postValue(searchHistory)
+                stateLiveData.postValue(TracksState.History(searchHistory))
             }
         })
     }
@@ -102,7 +102,7 @@ class SearchViewModel(private val app: App): ViewModel() {
     fun getSearchHistory() {
         searchHistoryInteractor.getSearchHistory(object : SearchHistoryInteractor.SearchHistoryConsumer {
             override fun consume(searchHistory: List<Track>) {
-                historyLiveData.postValue(searchHistory)
+                stateLiveData.postValue(TracksState.History(searchHistory))
             }
         })
     }
@@ -110,7 +110,7 @@ class SearchViewModel(private val app: App): ViewModel() {
     fun clearSearchHistory() {
         searchHistoryInteractor.clearSearchHistory(object : SearchHistoryInteractor.SearchHistoryConsumer {
             override fun consume(searchHistory: List<Track>) {
-                historyLiveData.postValue(searchHistory)
+                stateLiveData.postValue(TracksState.History(searchHistory))
             }
         })
     }

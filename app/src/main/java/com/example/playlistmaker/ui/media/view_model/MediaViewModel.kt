@@ -16,11 +16,8 @@ import java.util.Locale
 
 class MediaViewModel(private val url: String): ViewModel() {
 
-    private val playerStateLiveData = MutableLiveData(PlayerState.STATE_DEFAULT)
+    private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default("00:00"))
     fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
-
-    private val progressTimeLiveData = MutableLiveData("00:00")
-    fun observeProgressTime(): LiveData<String> = progressTimeLiveData
 
     private val mediaPlayer = MediaPlayer()
     private val handler = Handler(Looper.getMainLooper())
@@ -37,32 +34,32 @@ class MediaViewModel(private val url: String): ViewModel() {
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            playerStateLiveData.postValue(PlayerState.STATE_PREPARED)
+            playerStateLiveData.postValue(PlayerState.Prepared("00:00"))
         }
         mediaPlayer.setOnCompletionListener {
-            playerStateLiveData.postValue(PlayerState.STATE_PREPARED)
+            playerStateLiveData.postValue(PlayerState.Prepared("00:00"))
             handler.removeCallbacks(timeUpdater)
         }
     }
 
     private fun startPlaying() {
         mediaPlayer.start()
-        playerStateLiveData.postValue(PlayerState.STATE_PLAYING)
+        playerStateLiveData.postValue(PlayerState.Playing(playerStateLiveData.value?.progress ?: "00:00"))
         handler.post(timeUpdater)
     }
 
     fun pausePlaying() {
         mediaPlayer.pause()
-        playerStateLiveData.postValue(PlayerState.STATE_PAUSED)
+        playerStateLiveData.postValue(PlayerState.Paused(playerStateLiveData.value?.progress ?: "00:00"))
         handler.removeCallbacks(timeUpdater)
     }
 
     fun playBackControl() {
         when(playerStateLiveData.value) {
-            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> {
+            is PlayerState.Prepared, is PlayerState.Paused -> {
                 startPlaying()
             }
-            PlayerState.STATE_PLAYING -> {
+            is PlayerState.Playing -> {
                 pausePlaying()
             }
             else -> {
@@ -73,7 +70,12 @@ class MediaViewModel(private val url: String): ViewModel() {
     private fun updateDurationTv(): Runnable {
         return object : Runnable {
             override fun run() {
-                progressTimeLiveData.postValue(dateFormat.format(mediaPlayer.currentPosition))
+                val progress = dateFormat.format(mediaPlayer.currentPosition)
+                when (val cur = playerStateLiveData.value) {
+                    is PlayerState.Playing -> playerStateLiveData.postValue(cur.copy(progress))
+                    is PlayerState.Paused -> playerStateLiveData.postValue(cur.copy(progress))
+                    else -> {}
+                }
                 handler.postDelayed(this, DELAY_HALF_SECOND)
             }
         }

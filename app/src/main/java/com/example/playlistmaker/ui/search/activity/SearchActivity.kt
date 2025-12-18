@@ -64,9 +64,9 @@ class SearchActivity : AppCompatActivity() {
         binding.input.setText(searchText)
 
         binding.input.setOnFocusChangeListener { _, hasFocus ->
-                viewModel.getSearchHistory()
+                //viewModel.getSearchHistory()
                 val state = viewModel.observeState().value
-                if (hasFocus && binding.input.text.isEmpty() && state is TracksState.History) {
+                if (hasFocus && binding.input.text.isEmpty() && state is TracksState.Content) {
                     showHistoryView(state.history)
                 } else {
                     hideHistoryView()
@@ -85,7 +85,7 @@ class SearchActivity : AppCompatActivity() {
                 if (text.isNullOrEmpty()) {
                     viewModel.getSearchHistory()
                     val state = viewModel.observeState().value
-                    showHistoryView(if (state is TracksState.History) state.history else emptyList())
+                    showHistoryView(if (state is TracksState.Content) state.history else emptyList())
                 }
             }
 
@@ -214,9 +214,9 @@ class SearchActivity : AppCompatActivity() {
         when(state) {
             is TracksState.Empty -> showNothingFound()
             is TracksState.Error -> showErrorSearch()
-            is TracksState.Content -> showRecycler(state.tracks)
+            is TracksState.Content -> if (binding.input.text.isNotEmpty()) showRecycler(state.tracks) else showHistoryView(state.history)
             is TracksState.Loading -> showProgress()
-            is TracksState.History -> showHistoryView(state.history)
+           // is TracksState.History -> showHistoryView(state.history)
         }
     }
 

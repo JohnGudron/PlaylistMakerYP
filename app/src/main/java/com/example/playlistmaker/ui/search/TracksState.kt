@@ -7,7 +7,8 @@ sealed interface TracksState {
     object Loading : TracksState
 
     data class Content(
-        val tracks: List<Track>
+        val tracks: List<Track>,
+        val history: List<Track>
     ) : TracksState
 
     data class Error(
@@ -17,8 +18,4 @@ sealed interface TracksState {
     data class Empty(
         val message: String
     ) : TracksState
-
-    data class History(val history: List<Track>): TracksState
 }
-
-data class CombinedTrackState(val tracksState: TracksState, val history: List<Track>)

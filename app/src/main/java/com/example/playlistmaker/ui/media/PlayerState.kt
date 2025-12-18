@@ -1,5 +1,8 @@
 package com.example.playlistmaker.ui.media
 
-enum class PlayerState (val value: Int) {
-    STATE_DEFAULT(0),STATE_PREPARED(1), STATE_PLAYING(2), STATE_PAUSED(3)
+sealed class PlayerState(open val progress: String) {
+    data class Default(override val progress: String) : PlayerState(progress)
+    data class Prepared(override val progress: String) : PlayerState(progress)
+    data class Playing(override val progress: String) : PlayerState(progress)
+    data class Paused(override val progress: String) : PlayerState(progress)
 }

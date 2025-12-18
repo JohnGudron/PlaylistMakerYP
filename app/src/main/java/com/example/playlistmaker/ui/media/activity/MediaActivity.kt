@@ -29,14 +29,10 @@ class MediaActivity : AppCompatActivity() {
         track = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
         viewModel = ViewModelProvider(this, MediaViewModel.getFactory(track.previewUrl)).get(MediaViewModel::class.java)
 
-        viewModel.observeProgressTime().observe(this) {
-            binding.timeTv.text = it
-        }
-
         viewModel.observePlayerState().observe(this) {
-            binding.playBtn.setImageResource(if (it == PlayerState.STATE_PLAYING) R.drawable.ic_pause_btn_100 else R.drawable.ic_play_btn_100)
-            binding.playBtn.isClickable = (it != PlayerState.STATE_DEFAULT)
-            if (it == PlayerState.STATE_PREPARED) binding.timeTv.text = getString(R.string.time_placeholder)
+            binding.playBtn.setImageResource(if (it is PlayerState.Playing) R.drawable.ic_pause_btn_100 else R.drawable.ic_play_btn_100)
+            binding.playBtn.isClickable = (it !is PlayerState.Default)
+            binding.timeTv.text = it.progress
         }
 
         binding.backBtn.setOnClickListener { onBackPressedDispatcher.onBackPressed() }

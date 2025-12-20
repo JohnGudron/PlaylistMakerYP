@@ -10,15 +10,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ItemTrackBinding
 import com.example.playlistmaker.domain.models.Track
 
 class TrackAdapter(private val onItemClick: (Track) -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
 
     var tracks = mutableListOf<Track>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
-        return TrackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_track, parent, false))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
+        TrackViewHolder(
+            ItemTrackBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
@@ -32,25 +38,21 @@ class TrackAdapter(private val onItemClick: (Track) -> Unit) : RecyclerView.Adap
     }
 }
 
-class TrackViewHolder(view:View): RecyclerView.ViewHolder(view) {
-    private val trackImg = view.findViewById<ImageView>(R.id.track_img)
-    private val trackName = view.findViewById<TextView>(R.id.track_name)
-    private val trackArtist = view.findViewById<TextView>(R.id.track_artist)
-    private val trackDuration = view.findViewById<TextView>(R.id.track_duration)
+class TrackViewHolder(private val binding: ItemTrackBinding): RecyclerView.ViewHolder(binding.root) {
 
     fun bind(track: Track) {
-        Glide.with(trackImg.context)
+        Glide.with(binding.trackImg.context)
             .load(track.artworkUrl100)
             .placeholder(R.drawable.ic_track_placeholder)
             .centerCrop()
             .transform(RoundedCorners(
                 TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 8f, trackImg.context.resources.displayMetrics
+                    TypedValue.COMPLEX_UNIT_DIP, 8f, binding.trackImg.context.resources.displayMetrics
                 ).toInt()
             ))
-            .into(trackImg)
-        trackName.text = track.trackName
-        trackArtist.text = track.artistName
-        trackDuration.text = track.trackDuration
+            .into(binding.trackImg)
+        binding.trackName.text = track.trackName
+        binding.trackArtist.text = track.artistName
+        binding.trackDuration.text = track.trackDuration
     }
 }

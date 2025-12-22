@@ -4,33 +4,32 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.media.activity.MediaActivity
 import com.example.playlistmaker.ui.search.TrackAdapter
 import com.example.playlistmaker.ui.search.TracksState
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.google.gson.Gson
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val TRACK = "track"
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
+    private val handler: Handler by inject()
 
-    private val handler = Handler(Looper.getMainLooper())
     private var itemClickAllowed = true
-
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var adapter: TrackAdapter
 
@@ -43,18 +42,9 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this, SearchViewModel.getFactory()).get(SearchViewModel::class.java)
-
         viewModel.observeState().observe(this) {
                 renderState(it)
-               // historyAdapter.tracks = it.history.toMutableList()
-               // historyAdapter.notifyDataSetChanged()
         }
-
-        /*viewModel.observeHistory().observe(this) {
-            historyAdapter.tracks = it.toMutableList()
-            historyAdapter.notifyDataSetChanged()
-        }*/
 
         viewModel.getSearchHistory()
 
@@ -64,7 +54,6 @@ class SearchActivity : AppCompatActivity() {
         binding.input.setText(searchText)
 
         binding.input.setOnFocusChangeListener { _, hasFocus ->
-                //viewModel.getSearchHistory()
                 val state = viewModel.observeState().value
                 if (hasFocus && binding.input.text.isEmpty() && state is TracksState.Content) {
                     showHistoryView(state.history)
@@ -216,7 +205,6 @@ class SearchActivity : AppCompatActivity() {
             is TracksState.Error -> showErrorSearch()
             is TracksState.Content -> if (binding.input.text.isNotEmpty()) showRecycler(state.tracks) else showHistoryView(state.history)
             is TracksState.Loading -> showProgress()
-           // is TracksState.History -> showHistoryView(state.history)
         }
     }
 

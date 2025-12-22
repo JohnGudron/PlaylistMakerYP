@@ -10,6 +10,7 @@ class SharingInteractorImpl (
     private val externalNavigator: ExternalNavigator,
     private val context: Context
 ) : SharingInteractor {
+
     override fun shareApp(context: Context) {
         externalNavigator.shareLink(context, getShareAppLink())
     }

@@ -4,14 +4,13 @@ import android.icu.text.SimpleDateFormat
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.ItunesSearchRequest
 import com.example.playlistmaker.data.dto.ItunesSearchResponse
-import com.example.playlistmaker.domain.api.TracksRepository
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.TracksRepository
+import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.util.Resource
-import java.util.Locale
 
-class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRepository {
-
-    private val dateFormat =  SimpleDateFormat("mm:ss", Locale.getDefault())
+class TracksRepositoryImpl (
+    private val dateFormat: SimpleDateFormat,
+    private val networkClient: NetworkClient): TracksRepository {
 
     override fun searchTracks(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(ItunesSearchRequest(expression))

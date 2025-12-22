@@ -2,13 +2,12 @@ package com.example.playlistmaker.data.local
 
 import android.icu.text.SimpleDateFormat
 import com.example.playlistmaker.data.dto.TrackDto
-import com.example.playlistmaker.domain.api.SearchHistoryRepository
-import com.example.playlistmaker.domain.models.Track
-import java.util.Locale
+import com.example.playlistmaker.domain.search.SearchHistoryRepository
+import com.example.playlistmaker.domain.search.model.Track
 
-class SearchHistoryRepositoryImpl (private val localStorage: LocalHistoryStorage): SearchHistoryRepository {
-
-    private val dateFormat =  SimpleDateFormat("mm:ss", Locale.getDefault())
+class SearchHistoryRepositoryImpl (
+    private val dateFormat:  SimpleDateFormat,
+    private val localStorage: LocalHistoryStorage): SearchHistoryRepository {
 
     override fun getSearchHistory(): List<Track> {
         return localStorage.getHistory().map {

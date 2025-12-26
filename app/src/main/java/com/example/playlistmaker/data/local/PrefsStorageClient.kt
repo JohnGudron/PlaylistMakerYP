@@ -6,6 +6,7 @@ import com.example.playlistmaker.data.StorageClient
 import com.google.gson.Gson
 import java.lang.reflect.Type
 
+// TODO include to or remove from project
 class PrefsStorageClient<T>(
     private val context: Context,
     private val dataKey: String,

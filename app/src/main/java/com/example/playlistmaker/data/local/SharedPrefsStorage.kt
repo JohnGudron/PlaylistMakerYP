@@ -6,7 +6,9 @@ import com.google.gson.Gson
 
 const val HISTORY = "history"
 
-class SharedPrefsStorage (private val sharedPrefs: SharedPreferences): LocalHistoryStorage {
+class SharedPrefsStorage (
+    private val sharedPrefs: SharedPreferences,
+    private val gson: Gson): LocalHistoryStorage {
 
     private val history = ArrayDeque<TrackDto>()
     init {
@@ -36,7 +38,7 @@ class SharedPrefsStorage (private val sharedPrefs: SharedPreferences): LocalHist
     }
 
     private fun writeToPrefs(tracks: Array<TrackDto>) {
-        val json = Gson().toJson(tracks)
+        val json = gson.toJson(tracks)
         sharedPrefs.edit()
             .putString(HISTORY, json)
             .apply()
@@ -44,6 +46,6 @@ class SharedPrefsStorage (private val sharedPrefs: SharedPreferences): LocalHist
 
     private fun readFromPrefs(): Array<TrackDto> {
         val json = sharedPrefs.getString(HISTORY, null) ?: return emptyArray()
-        return Gson().fromJson(json, Array<TrackDto>::class.java)
+        return gson.fromJson(json, Array<TrackDto>::class.java)
     }
 }

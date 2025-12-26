@@ -3,26 +3,21 @@ package com.example.playlistmaker.ui.media.view_model
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
 import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.ui.media.PlayerState
-import java.util.Locale
 
-class MediaViewModel(private val url: String): ViewModel() {
+class MediaViewModel(
+    private val url: String,
+    private val mediaPlayer: MediaPlayer,
+    private val handler: Handler,
+    private val dateFormat: SimpleDateFormat): ViewModel() {
 
     private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default("00:00"))
     fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
 
-    private val mediaPlayer = MediaPlayer()
-    private val handler = Handler(Looper.getMainLooper())
-
-    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private var timeUpdater: Runnable
 
     init {
@@ -82,13 +77,6 @@ class MediaViewModel(private val url: String): ViewModel() {
     }
 
     companion object {
-
-        fun getFactory(url: String): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                MediaViewModel(url)
-            }
-        }
-
         const val DELAY_HALF_SECOND = 500L
     }
 

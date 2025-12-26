@@ -1,10 +1,11 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.domain.search.impl
 
-import com.example.playlistmaker.domain.api.SearchHistoryInteractor
-import com.example.playlistmaker.domain.api.SearchHistoryRepository
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.SearchHistoryInteractor
+import com.example.playlistmaker.domain.search.SearchHistoryRepository
+import com.example.playlistmaker.domain.search.model.Track
 
-class SearchHistoryInteractorImpl (private val searchHistoryRepository: SearchHistoryRepository): SearchHistoryInteractor {
+class SearchHistoryInteractorImpl (private val searchHistoryRepository: SearchHistoryRepository):
+    SearchHistoryInteractor {
 
     override fun getSearchHistory(consumer: SearchHistoryInteractor.SearchHistoryConsumer) {
         consumer.consume(searchHistoryRepository.getSearchHistory())

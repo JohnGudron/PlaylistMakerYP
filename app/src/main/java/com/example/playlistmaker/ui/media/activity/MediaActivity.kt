@@ -3,31 +3,33 @@ package com.example.playlistmaker.ui.media.activity
 import android.os.Bundle
 import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.media.PlayerState
 import com.example.playlistmaker.ui.media.view_model.MediaViewModel
 import com.example.playlistmaker.ui.search.activity.TRACK
 import com.google.gson.Gson
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class MediaActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMediaBinding
-    private lateinit var track: Track
-    private lateinit var viewModel: MediaViewModel
+    private val track by lazy {
+        Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
+    }
+    private val viewModel: MediaViewModel by viewModel {
+        parametersOf(track.previewUrl)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         binding = ActivityMediaBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        track = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
-        viewModel = ViewModelProvider(this, MediaViewModel.getFactory(track.previewUrl)).get(MediaViewModel::class.java)
 
         viewModel.observePlayerState().observe(this) {
             binding.playBtn.setImageResource(if (it is PlayerState.Playing) R.drawable.ic_pause_btn_100 else R.drawable.ic_play_btn_100)

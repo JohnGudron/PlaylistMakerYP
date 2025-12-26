@@ -1,35 +1,23 @@
 package com.example.playlistmaker.ui.search.view_model
 
 import android.os.Handler
-import android.os.Looper
-import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.App
-import com.example.playlistmaker.PREFERENCES
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.api.SearchHistoryInteractor
-import com.example.playlistmaker.domain.api.TracksInteractor
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.SearchHistoryInteractor
+import com.example.playlistmaker.domain.search.TracksInteractor
+import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.search.TracksState
-import com.example.playlistmaker.util.Creator
 
 
-class SearchViewModel(private val app: App): ViewModel() {
+class SearchViewModel(
+    private val tracksInteractor: TracksInteractor,
+    private val searchHistoryInteractor: SearchHistoryInteractor,
+    private val handler: Handler,
+    private val app: App): ViewModel() {
 
-    private val tracksInteractor = Creator.provideTracksInteractor(app)
-    private val searchHistoryInteractor =
-        Creator.provideSearchHistoryInteractor(
-            app.getSharedPreferences(
-                PREFERENCES, MODE_PRIVATE
-            )
-        )
-    private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable = Runnable { makeSearch(searchText) }
     private var searchText = ""
 
@@ -130,12 +118,6 @@ class SearchViewModel(private val app: App): ViewModel() {
     }
 
     companion object {
-
-        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(this[APPLICATION_KEY] as App)
-            }
-        }
 
         const val SEARCH_DEBOUNCE_DELAY = 1500L
     }

@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.media.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.ui.media.util.SelectPage
 import com.example.playlistmaker.ui.media.util.ViewPagerAdapter
@@ -25,8 +26,8 @@ class MediaActivity : AppCompatActivity(), SelectPage {
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) {tab, position ->
             when (position) {
-                0 -> tab.text = "Избранные треки"
-                1 -> tab.text = "Плейлисты"
+                0 -> tab.text = getString(R.string.favourite_tracks)
+                1 -> tab.text = getString(R.string.playlists)
             }
         }
         tabMediator.attach()

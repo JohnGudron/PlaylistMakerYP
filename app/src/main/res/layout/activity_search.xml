@@ -129,7 +129,6 @@
             style="@style/SearchButtonStyle"
             />
 
-
     </LinearLayout>
 
     <LinearLayout
@@ -179,8 +178,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:id="@+id/history_recycler"/>
 
         <Button
@@ -189,7 +187,6 @@
             android:text="@string/clear_history"
             style="@style/SearchButtonStyle"
             android:id="@+id/clear_history_btn"/>
-
 
     </LinearLayout>
 

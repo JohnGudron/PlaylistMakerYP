@@ -3,8 +3,20 @@
     <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <item name="colorPrimary">@color/main_blue</item>
-        <item name="android:background">@color/background</item>
+
 
         <item name="android:textColor">@color/white</item>
+
+        <item name="tabStyle">@style/PlaylistMakerTabLayoutStyle</item>
     </style>
+
+    <style name="PlaylistMakerTabLayoutStyle" parent="Widget.MaterialComponents.TabLayout">
+        <!-- Цвет и высота индикатора -->
+        <item name="tabIndicatorColor">@color/back_color</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <!-- Вы также можете настроить цвета текста здесь -->
+        <item name="tabTextColor">@color/back_color</item>
+        <item name="tabSelectedTextColor">@color/back_color</item>
+    </style>
+
 </resources>

@@ -13,7 +13,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.search.model.Track
-import com.example.playlistmaker.ui.media.activity.MediaActivity
+import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import com.example.playlistmaker.ui.search.TrackAdapter
 import com.example.playlistmaker.ui.search.TracksState
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
@@ -130,7 +130,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun onItemClick(track: Track) {
         if (itemClickDebounce()) {
-            val intent = Intent(this, MediaActivity::class.java)
+            val intent = Intent(this, PlayerActivity::class.java)
             intent.putExtra(TRACK, Gson().toJson(track))
             startActivity(intent)
             viewModel.addTrackToHistory(track)

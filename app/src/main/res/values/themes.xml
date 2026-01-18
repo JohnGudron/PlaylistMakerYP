@@ -10,15 +10,23 @@
         <!-- Track when switch is ON -->
         <item name="trackColorActive">@color/light_blue</item>
 
-        <item name="android:background">@color/background</item>
-
-
-
         <!-- Thumb color when NOT activated -->
         <item name="colorOnSurface">@color/switcher_not_active</item>
         <!-- Thumb color when activated -->
         <item name="colorControlActivated">@color/main_blue</item>
 
+        <item name="tabStyle">@style/PlaylistMakerTabLayoutStyle</item>
+
+
+    </style>
+
+    <style name="PlaylistMakerTabLayoutStyle" parent="Widget.MaterialComponents.TabLayout">
+        <!-- Цвет и высота индикатора -->
+        <item name="tabIndicatorColor">@color/back_color</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <!-- Вы также можете настроить цвета текста здесь -->
+        <item name="tabTextColor">@color/back_color</item>
+        <item name="tabSelectedTextColor">@color/back_color</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.media
+package com.example.playlistmaker.ui.player
 
 sealed class PlayerState(open val progress: String) {
     data class Default(override val progress: String) : PlayerState(progress)

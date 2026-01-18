@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.media.view_model
+package com.example.playlistmaker.ui.player.view_model
 
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
@@ -7,9 +7,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.ui.media.PlayerState
+import com.example.playlistmaker.ui.player.PlayerState
 
-class MediaViewModel(
+class PlayerViewModel(
     private val url: String,
     private val mediaPlayer: MediaPlayer,
     private val handler: Handler,

@@ -21,10 +21,10 @@
     <color name="track_arrow_color">#AEAFB4</color>
     <color name="track_name_color">#000000</color>
     <color name="bad_response_text_color">#1A1B22</color>
-
-
     <color name="header_text_color_media">#1A1B22</color>
 
+    <color name="bottom_nav_cheked">#3772E7</color>
+    <color name="bottom_nav_uncheked">#1A1B22</color>
 
 
 </resources>

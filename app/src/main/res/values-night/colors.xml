@@ -21,4 +21,8 @@
     <color name="bad_response_text_color">#FFFFFFFF</color>
 
     <color name="header_text_color_media">#FFFFFFFF</color>
+
+    <color name="bottom_nav_cheked">#3772E7</color>
+    <color name="bottom_nav_uncheked">#FFFFFFFF</color>
+
 </resources>

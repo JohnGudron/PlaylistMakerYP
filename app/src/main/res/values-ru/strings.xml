@@ -28,5 +28,6 @@
     <string name="no_playlists">Вы не создали ни одного плейлиста</string>
     <string name="favourite_tracks">Избранные треки</string>
     <string name="playlists">Плейлисты</string>
+    <string name="time_placeholder">0:00</string>
 
 </resources>

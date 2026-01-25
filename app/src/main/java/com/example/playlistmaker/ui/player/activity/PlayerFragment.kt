@@ -2,42 +2,52 @@ package com.example.playlistmaker.ui.player.activity
 
 import android.os.Bundle
 import android.util.TypedValue
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityPlayerBinding
+import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.player.PlayerState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
-import com.example.playlistmaker.ui.search.activity.TRACK
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PlayerActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityPlayerBinding
+class PlayerFragment : Fragment() {
+
+    private var _binding: FragmentPlayerBinding? = null
+    private val binding get() = _binding!!
+
     private val track by lazy {
-        Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
+        Gson().fromJson(requireArguments().getString(TRACK), Track::class.java)
     }
     private val viewModel: PlayerViewModel by viewModel {
         parametersOf(track.previewUrl)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        super.onCreate(savedInstanceState)
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        viewModel.observePlayerState().observe(this) {
+        viewModel.observePlayerState().observe(viewLifecycleOwner) {
             binding.playBtn.setImageResource(if (it is PlayerState.Playing) R.drawable.ic_pause_btn_100 else R.drawable.ic_play_btn_100)
             binding.playBtn.isClickable = (it !is PlayerState.Default)
             binding.timeTv.text = it.progress
         }
 
-        binding.backBtn.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
         binding.durationContentTv.text = track.trackDuration
         binding.albumContentTv.text = track.collectionName
@@ -51,11 +61,13 @@ class PlayerActivity : AppCompatActivity() {
             .load(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
             .placeholder(R.drawable.ic_poster_placeholder_312)
             .centerCrop()
-            .transform(RoundedCorners(
-                    TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, 8f, binding.songPoster.context.resources.displayMetrics
-                    ).toInt()
-                ))
+            .transform(
+                RoundedCorners(
+                TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 8f, binding.songPoster.context.resources.displayMetrics
+                ).toInt()
+            )
+            )
             .into(binding.songPoster)
 
         binding.playBtn.setOnClickListener {
@@ -66,5 +78,19 @@ class PlayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.pausePlaying()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    companion object {
+
+        const val TRACK = "track"
+
+        @JvmStatic
+        fun createArgs(track: String) =
+                bundleOf(TRACK to track)
     }
 }

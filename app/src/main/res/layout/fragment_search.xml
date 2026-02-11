@@ -155,37 +155,45 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:orientation="vertical"
         android:id="@+id/search_history"
-        android:background="@color/background"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_24"
-            android:paddingTop="18dp"
-            android:paddingBottom="@dimen/middle_indent"
-            android:layout_marginBottom="@dimen/little_indent"
-            android:text="@string/you_were_looking_for"
-            style="@style/BadResponseTextStyle"
-            android:layout_gravity="center"/>
+        android:visibility="gone">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/history_recycler"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/background"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_24"
+                android:paddingTop="18dp"
+                android:paddingBottom="@dimen/middle_indent"
+                android:layout_marginBottom="@dimen/little_indent"
+                android:text="@string/you_were_looking_for"
+                style="@style/BadResponseTextStyle"
+                android:layout_gravity="center"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/clear_history"
-            style="@style/SearchButtonStyle"
-            android:id="@+id/clear_history_btn"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/history_recycler"/>
 
-    </LinearLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_history"
+                style="@style/SearchButtonStyle"
+                android:id="@+id/clear_history_btn"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
 
 </LinearLayout>

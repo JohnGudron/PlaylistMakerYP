@@ -12,7 +12,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.search.model.Track
-import com.example.playlistmaker.ui.player.PlayerState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -43,8 +42,8 @@ class PlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.observePlayerState().observe(viewLifecycleOwner) {
-            binding.playBtn.setImageResource(if (it is PlayerState.Playing) R.drawable.ic_pause_btn_100 else R.drawable.ic_play_btn_100)
-            binding.playBtn.isClickable = (it !is PlayerState.Default)
+            binding.playBtn.setImageResource(it.buttonImage)
+            binding.playBtn.isClickable = (it.isButtonPlayEnabled)
             binding.timeTv.text = it.progress
         }
 

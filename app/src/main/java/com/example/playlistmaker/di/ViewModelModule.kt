@@ -24,11 +24,11 @@ val viewModelModule = module {
     }
 
     viewModel { (url: String) ->
-        PlayerViewModel(url, get(),get(), get())
+        PlayerViewModel(url, get(), get())
     }
 
     viewModel {
-        SearchViewModel(get(),get(),get(),androidApplication() as App)
+        SearchViewModel(get(),get(),androidApplication() as App)
     }
 
     viewModel {

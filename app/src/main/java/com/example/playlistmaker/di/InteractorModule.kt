@@ -29,7 +29,7 @@ val interactorModule = module {
     }
 
     single<TracksInteractor>{
-        TracksInteractorImpl(get(), get())
+        TracksInteractorImpl(get())
     }
 
     single<SettingsInteractor> {

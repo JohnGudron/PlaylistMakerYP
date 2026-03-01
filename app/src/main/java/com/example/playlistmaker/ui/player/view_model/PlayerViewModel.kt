@@ -2,26 +2,28 @@ package com.example.playlistmaker.ui.player.view_model
 
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
-import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.ui.player.PlayerState
+import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.ui.player.util.PlayerState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class PlayerViewModel(
+
+class  PlayerViewModel(
     private val url: String,
     private val mediaPlayer: MediaPlayer,
-    private val handler: Handler,
     private val dateFormat: SimpleDateFormat): ViewModel() {
 
-    private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default("00:00"))
+    private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default())
     fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
 
-    private var timeUpdater: Runnable
+    private var timeUpdaterJob: Job? = null
 
     init {
-        timeUpdater = updateDurationTv()
         preparePlayer()
     }
 
@@ -29,24 +31,25 @@ class PlayerViewModel(
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            playerStateLiveData.postValue(PlayerState.Prepared("00:00"))
+            playerStateLiveData.postValue(PlayerState.Prepared())
         }
         mediaPlayer.setOnCompletionListener {
-            playerStateLiveData.postValue(PlayerState.Prepared("00:00"))
-            handler.removeCallbacks(timeUpdater)
+            playerStateLiveData.postValue(PlayerState.Prepared())
+            timeUpdaterJob?.cancel()
         }
     }
 
     private fun startPlaying() {
         mediaPlayer.start()
-        playerStateLiveData.postValue(PlayerState.Playing(playerStateLiveData.value?.progress ?: "00:00"))
-        handler.post(timeUpdater)
+        playerStateLiveData.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
+        startTimer()
     }
 
     fun pausePlaying() {
         mediaPlayer.pause()
-        playerStateLiveData.postValue(PlayerState.Paused(playerStateLiveData.value?.progress ?: "00:00"))
-        handler.removeCallbacks(timeUpdater)
+        timeUpdaterJob?.cancel()
+        playerStateLiveData.postValue(PlayerState.Paused(getCurrentPlayerPosition()
+        ))
     }
 
     fun playBackControl() {
@@ -62,27 +65,25 @@ class PlayerViewModel(
         }
     }
 
-    private fun updateDurationTv(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                val progress = dateFormat.format(mediaPlayer.currentPosition)
-                when (val cur = playerStateLiveData.value) {
-                    is PlayerState.Playing -> playerStateLiveData.postValue(cur.copy(progress))
-                    is PlayerState.Paused -> playerStateLiveData.postValue(cur.copy(progress))
-                    else -> {}
-                }
-                handler.postDelayed(this, DELAY_HALF_SECOND)
+    private fun startTimer() {
+        timeUpdaterJob = viewModelScope.launch {
+            while (mediaPlayer.isPlaying) {
+                delay(DELAY)
+                playerStateLiveData.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
             }
         }
     }
 
+    private fun getCurrentPlayerPosition(): String {
+        return dateFormat.format(mediaPlayer.currentPosition)
+    }
+
     companion object {
-        const val DELAY_HALF_SECOND = 500L
+        const val DELAY = 300L
     }
 
     override fun onCleared() {
         super.onCleared()
         mediaPlayer.release()
-        handler.removeCallbacks(timeUpdater)
     }
 }

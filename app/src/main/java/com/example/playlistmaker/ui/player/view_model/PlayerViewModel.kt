@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.db.FavoriteInteractor
+import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.player.util.PlayerState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,10 +18,14 @@ import kotlinx.coroutines.launch
 class  PlayerViewModel(
     private val url: String,
     private val mediaPlayer: MediaPlayer,
-    private val dateFormat: SimpleDateFormat): ViewModel() {
+    private val dateFormat: SimpleDateFormat,
+    private val favoriteInteractor: FavoriteInteractor): ViewModel() {
 
     private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default())
     fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
+
+    private val isFavoriteLiveData = MutableLiveData<Boolean>()
+    fun observeIsFavorite(): LiveData<Boolean> = isFavoriteLiveData
 
     private var timeUpdaterJob: Job? = null
 
@@ -63,6 +69,15 @@ class  PlayerViewModel(
             else -> {
                 Log.d("PlayerState", "playBackControl: trying play/pause in default state")}
         }
+    }
+
+    fun handleFavorite(track: Track) : Boolean {
+        viewModelScope.launch { if (track.isFavorite) favoriteInteractor.deleteFavorite(track) else favoriteInteractor.insertFavorite(track) }
+        return !track.isFavorite
+    }
+
+    fun checkFavorite(track: Track) {
+        viewModelScope.launch { favoriteInteractor.getFavoriteIds().collect { ids -> isFavoriteLiveData.postValue(track.trackId in ids)} }
     }
 
     private fun startTimer() {

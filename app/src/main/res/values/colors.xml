@@ -26,5 +26,7 @@
     <color name="bottom_nav_cheked">#3772E7</color>
     <color name="bottom_nav_uncheked">#1A1B22</color>
 
+    <color name="favorite_icon_tint">#1A1B22</color>
+
 
 </resources>

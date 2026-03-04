@@ -24,7 +24,7 @@ val viewModelModule = module {
     }
 
     viewModel { (url: String) ->
-        PlayerViewModel(url, get(), get())
+        PlayerViewModel(url, get(), get(), get())
     }
 
     viewModel {
@@ -36,7 +36,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        FavouriteTracksViewModel()
+        FavouriteTracksViewModel(get())
     }
 
     viewModel {

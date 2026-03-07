@@ -70,7 +70,7 @@ class SearchViewModel(
     }
 
     fun addTrackToHistory(track: Track) {
-        searchHistoryInteractor.addTrackToHistory(track,object : SearchHistoryInteractor.SearchHistoryConsumer {
+        viewModelScope.launch { searchHistoryInteractor.addTrackToHistory(track,object : SearchHistoryInteractor.SearchHistoryConsumer {
             override fun consume(searchHistory: List<Track>) {
                 if (stateLiveData.value is TracksState.Content) {
                     stateLiveData.postValue(TracksState.Content((stateLiveData.value as TracksState.Content).tracks, searchHistory))
@@ -78,11 +78,11 @@ class SearchViewModel(
                     stateLiveData.postValue(TracksState.Content(emptyList(), searchHistory))
                 }
             }
-        })
+        })}
     }
 
     fun getSearchHistory() {
-        searchHistoryInteractor.getSearchHistory(object : SearchHistoryInteractor.SearchHistoryConsumer {
+        viewModelScope.launch { searchHistoryInteractor.getSearchHistory(object : SearchHistoryInteractor.SearchHistoryConsumer {
             override fun consume(searchHistory: List<Track>) {
                 if (stateLiveData.value is TracksState.Content) {
                     stateLiveData.postValue(TracksState.Content((stateLiveData.value as TracksState.Content).tracks, searchHistory))
@@ -90,11 +90,11 @@ class SearchViewModel(
                     stateLiveData.postValue(TracksState.Content(emptyList(), searchHistory))
                 }
             }
-        })
+        }) }
     }
 
     fun clearSearchHistory() {
-        searchHistoryInteractor.clearSearchHistory(object : SearchHistoryInteractor.SearchHistoryConsumer {
+        viewModelScope.launch { searchHistoryInteractor.clearSearchHistory(object : SearchHistoryInteractor.SearchHistoryConsumer {
             override fun consume(searchHistory: List<Track>) {
                 if (stateLiveData.value is TracksState.Content) {
                     stateLiveData.postValue(TracksState.Content((stateLiveData.value as TracksState.Content).tracks, searchHistory))
@@ -102,7 +102,7 @@ class SearchViewModel(
                     stateLiveData.postValue(TracksState.Content(emptyList(), searchHistory))
                 }
             }
-        })
+        }) }
     }
 
     private fun renderState(state: TracksState) {

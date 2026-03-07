@@ -2,8 +2,10 @@ package com.example.playlistmaker.di
 
 import android.content.Context
 import android.icu.text.SimpleDateFormat
+import androidx.room.Room
 import com.example.playlistmaker.PREFERENCES
 import com.example.playlistmaker.data.NetworkClient
+import com.example.playlistmaker.data.db.AppDatabase
 import com.example.playlistmaker.data.local.LocalHistoryStorage
 import com.example.playlistmaker.data.local.SharedPrefsStorage
 import com.example.playlistmaker.data.network.ItunesApiService
@@ -47,5 +49,13 @@ val dataModule = module {
     // local
     single<LocalHistoryStorage> {
         SharedPrefsStorage(get(), get())
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db").build()
+    }
+
+    single {
+        (get() as AppDatabase).trackDao()
     }
 }

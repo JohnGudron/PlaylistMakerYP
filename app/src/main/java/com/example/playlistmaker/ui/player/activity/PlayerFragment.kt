@@ -41,12 +41,18 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.checkFavorite(track)
+
         viewModel.observePlayerState().observe(viewLifecycleOwner) {
             binding.playBtn.setImageResource(it.buttonImage)
             binding.playBtn.isClickable = (it.isButtonPlayEnabled)
             binding.timeTv.text = it.progress
         }
 
+        viewModel.observeIsFavorite().observe(viewLifecycleOwner) {
+            track.isFavorite = it
+            setFavoriteImage()
+        }
 
         binding.durationContentTv.text = track.trackDuration
         binding.albumContentTv.text = track.collectionName
@@ -55,6 +61,7 @@ class PlayerFragment : Fragment() {
         binding.countryContentTv.text = track.country
         binding.nameTv.text = track.trackName
         binding.artistTv.text = track.artistName
+        setFavoriteImage()
 
         Glide.with(binding.songPoster.context)
             .load(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
@@ -72,6 +79,18 @@ class PlayerFragment : Fragment() {
         binding.playBtn.setOnClickListener {
             viewModel.playBackControl()
         }
+
+        binding.favoriteBtn.setOnClickListener {
+            track.isFavorite = viewModel.handleFavorite(track)
+            setFavoriteImage()
+        }
+    }
+
+    private fun setFavoriteImage() {
+        binding.favoriteBtn.setImageResource(
+            if (track.isFavorite) R.drawable.ic_favorite_btn_true_51
+            else R.drawable.ic_favorite_btn_false_51
+        )
     }
 
     override fun onPause() {

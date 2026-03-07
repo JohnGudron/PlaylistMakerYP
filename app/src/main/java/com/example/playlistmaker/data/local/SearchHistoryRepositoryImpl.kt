@@ -1,15 +1,20 @@
 package com.example.playlistmaker.data.local
 
 import android.icu.text.SimpleDateFormat
+import com.example.playlistmaker.data.db.AppDatabase
 import com.example.playlistmaker.data.dto.TrackDto
 import com.example.playlistmaker.domain.search.SearchHistoryRepository
 import com.example.playlistmaker.domain.search.model.Track
 
 class SearchHistoryRepositoryImpl (
     private val dateFormat:  SimpleDateFormat,
-    private val localStorage: LocalHistoryStorage): SearchHistoryRepository {
+    private val localStorage: LocalHistoryStorage,
+    private val appDatabase: AppDatabase): SearchHistoryRepository {
 
-    override fun getSearchHistory(): List<Track> {
+    override suspend fun getSearchHistory(): List<Track> {
+
+        val favorite = appDatabase.trackDao().getTracksIds()
+
         return localStorage.getHistory().map {
             Track(
                 it.trackName,
@@ -22,6 +27,7 @@ class SearchHistoryRepositoryImpl (
                 it.primaryGenreName,
                 it.country,
                 it.previewUrl,
+                it.trackId in favorite
             )
         }
     }

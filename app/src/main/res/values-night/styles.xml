@@ -35,6 +35,33 @@
         <item name="android:textFontWeight">400</item>
     </style>
 
+    <style name="TextInputLayoutStyle">
+        <item name="boxBackgroundMode">outline</item>
+        <item name="boxCornerRadiusBottomEnd">4dp</item>
+        <item name="boxCornerRadiusBottomStart">4dp</item>
+        <item name="boxCornerRadiusTopEnd">4dp</item>
+        <item name="boxCornerRadiusTopStart">4dp</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+
+        <item name="enforceMaterialTheme">true</item>
+        <item name="boxBackgroundColor">@null</item>
+        <item name="boxStrokeColor">@color/white</item>
+        <item name="hintTextColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:backgroundTintMode">screen</item>
+
+    </style>
+
+    <style name="TextInputEditTextStyle">
+        <item name="android:backgroundTintMode">screen</item>
+        <item name="android:backgroundTint">@color/background</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+    </style>
+
     <style name="SettingsImageStyle">
         <item name="android:layout_width">@dimen/icon_image_size</item>
         <item name="android:layout_height">@dimen/icon_image_size</item>
@@ -42,4 +69,27 @@
         <item name="android:layout_marginTop">19dp</item>
         <item name="android:layout_marginBottom">18dp</item>
     </style>
+
+    <style name="roundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+
+    <style name="testStyle">
+
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimarySurface">@color/white</item>
+        <item name="android:colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/white</item>
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorSecondaryVariant">@color/white</item>
+        <item name="android:colorSecondary">@color/white</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnBackground">@color/white</item>
+
+
+    </style>
+
 </resources>

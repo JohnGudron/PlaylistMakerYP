@@ -27,6 +27,12 @@
     <color name="bottom_nav_uncheked">#1A1B22</color>
 
     <color name="favorite_icon_tint">#1A1B22</color>
+    
+    <color name="playlist_creation_tint">#AEAFB4</color>
+
+    <color name="playlist_hint_when_clicked">#AEAFB4</color>
+    <color name="playlist_name">#1A1B22</color>
+    <color name="playlist_description">#1A1B22</color>
 
 
 </resources>

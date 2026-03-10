@@ -27,4 +27,10 @@
 
     <color name="favorite_icon_tint">#FFFFFFFF</color>
 
+    <color name="playlist_creation_tint">#AEAFB4</color>
+
+    <color name="playlist_hint_when_clicked">#FFFFFF</color>
+    <color name="playlist_name">#FFFFFF</color>
+    <color name="playlist_description">#FFFFFF</color>
+
 </resources>

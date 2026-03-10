@@ -6,19 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.media.model.Playlist
+import com.example.playlistmaker.domain.search.model.Track
 import kotlinx.coroutines.launch
 
-class PlaylistsViewModel(private val playlistInteractor: PlaylistInteractor): ViewModel() {
+class NewPlaylistViewModel(private val playlistInteractor: PlaylistInteractor): ViewModel() {
 
-    private val playlistsLiveData = MutableLiveData<List<Playlist>>()
-    fun observePlaylists(): LiveData<List<Playlist>> = playlistsLiveData
+        private val playlistLiveData = MutableLiveData<List<Track>>()
+        fun observeState(): LiveData<List<Track>> = playlistLiveData
 
-    fun getPlaylists() {
+    fun saveNewPlaylist(playlist: Playlist) {
         viewModelScope.launch {
-            playlistInteractor.getAllPlaylists().collect { playlists ->
-                playlistsLiveData.postValue(playlists)
-            }
+            playlistInteractor.insertPlaylist(playlist)
         }
     }
+
 
 }

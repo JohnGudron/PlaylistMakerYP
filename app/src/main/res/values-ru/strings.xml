@@ -29,5 +29,15 @@
     <string name="favourite_tracks">Избранные треки</string>
     <string name="playlists">Плейлисты</string>
     <string name="time_placeholder">0:00</string>
+    <string name="add_to_playlist">Добавить в плейлист</string>
+    <string name="playlist_name">Название плейлиста</string>
+    <string name="playlist_size">Размер плейлиста</string>
+    <string name="description">Описание</string>
+    <string name="name">Название*</string>
+    <string name="playlist_name_allert">Введите название плейлиста!</string>
+    <string name="finish_creating_playlist">Завершить создание плейлиста?</string>
+    <string name="all_unsaved_data_will">Все несохраненные данные будут утеряны</string>
+    <string name="cancel">Отмена</string>
+    <string name="complete">Завершить</string>
 
 </resources>

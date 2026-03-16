@@ -30,4 +30,17 @@
     <string name="no_playlists">You haven\'t created any playlists</string>
     <string name="favourite_tracks">Favourite tracks</string>
     <string name="playlists">Playlists</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_to_playlist">Add to playlist</string>
+    <string name="playlist_name">Playlist name</string>
+    <string name="playlist_size">Playlist size</string>
+    <string name="description">Description</string>
+    <string name="name">Name*</string>
+    <string name="playlist_name_allert">Fill in the playlist name!</string>
+    <string name="finish_creating_playlist">Finish creating a playlist?</string>
+    <string name="all_unsaved_data_will">All unsaved data will be lost</string>
+    <string name="cancel">Cancel</string>
+    <string name="complete">Complete</string>
+
 </resources>

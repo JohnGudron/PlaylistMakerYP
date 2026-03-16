@@ -8,6 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.FavoriteInteractor
+import com.example.playlistmaker.domain.db.PlaylistInteractor
+import com.example.playlistmaker.domain.media.model.Playlist
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.player.util.PlayerState
 import kotlinx.coroutines.Job
@@ -19,13 +21,20 @@ class  PlayerViewModel(
     private val url: String,
     private val mediaPlayer: MediaPlayer,
     private val dateFormat: SimpleDateFormat,
-    private val favoriteInteractor: FavoriteInteractor): ViewModel() {
+    private val favoriteInteractor: FavoriteInteractor,
+    private val playlistInteractor: PlaylistInteractor): ViewModel() {
 
     private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default())
     fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
 
     private val isFavoriteLiveData = MutableLiveData<Boolean>()
     fun observeIsFavorite(): LiveData<Boolean> = isFavoriteLiveData
+
+    private val playlistsLiveData = MutableLiveData<List<Playlist>>()
+    fun observePlaylists(): LiveData<List<Playlist>> = playlistsLiveData
+
+    private val isTrackAddedLiveData = MutableLiveData<Boolean>()
+    fun observeIsTrackAdded(): LiveData<Boolean> = isTrackAddedLiveData
 
     private var timeUpdaterJob: Job? = null
 
@@ -51,6 +60,14 @@ class  PlayerViewModel(
         startTimer()
     }
 
+    fun getPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor.getAllPlaylists().collect { playlists ->
+                playlistsLiveData.postValue(playlists)
+            }
+        }
+    }
+
     fun pausePlaying() {
         mediaPlayer.pause()
         timeUpdaterJob?.cancel()
@@ -71,13 +88,32 @@ class  PlayerViewModel(
         }
     }
 
-    fun handleFavorite(track: Track) : Boolean {
-        viewModelScope.launch { if (track.isFavorite) favoriteInteractor.deleteFavorite(track) else favoriteInteractor.insertFavorite(track) }
+    fun handleFavorite(track: Track): Boolean {
+        viewModelScope.launch {
+            if (track.isFavorite) favoriteInteractor.deleteFavorite(track) else favoriteInteractor.insertFavorite(
+                track
+            )
+        }
         return !track.isFavorite
     }
 
     fun checkFavorite(track: Track) {
-        viewModelScope.launch { favoriteInteractor.getFavoriteIds().collect { ids -> isFavoriteLiveData.postValue(track.trackId in ids)} }
+        viewModelScope.launch {
+            favoriteInteractor.getFavoriteIds()
+                .collect { ids -> isFavoriteLiveData.postValue(track.trackId in ids) }
+        }
+    }
+
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        if (track.trackId !in playlist.tracksIds) {
+            viewModelScope.launch {
+                playlistInteractor.addTrackToPlaylist(track, playlist)
+                isTrackAddedLiveData.postValue(true)
+                getPlaylists()
+            }
+        } else {
+            isTrackAddedLiveData.postValue(false)
+        }
     }
 
     private fun startTimer() {

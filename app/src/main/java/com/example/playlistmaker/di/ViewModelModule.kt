@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import com.example.playlistmaker.App
 import com.example.playlistmaker.ui.media.view_model.FavouriteTracksViewModel
+import com.example.playlistmaker.ui.media.view_model.NewPlaylistViewModel
 import com.example.playlistmaker.ui.media.view_model.PlaylistsViewModel
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
@@ -24,7 +25,7 @@ val viewModelModule = module {
     }
 
     viewModel { (url: String) ->
-        PlayerViewModel(url, get(), get(), get())
+        PlayerViewModel(url, get(), get(), get(), get())
     }
 
     viewModel {
@@ -40,6 +41,10 @@ val viewModelModule = module {
     }
 
     viewModel {
-        PlaylistsViewModel()
+        PlaylistsViewModel(get())
+    }
+
+    viewModel {
+        NewPlaylistViewModel(get())
     }
 }

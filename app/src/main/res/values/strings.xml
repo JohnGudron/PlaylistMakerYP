@@ -42,5 +42,14 @@
     <string name="all_unsaved_data_will">All unsaved data will be lost</string>
     <string name="cancel">Cancel</string>
     <string name="complete">Complete</string>
+    <string name="share">Share</string>
+    <string name="edit_playlist_info">Edit playlist info</string>
+    <string name="delete_playlist">Delete playlist</string>
+    <string name="track_successfully_deleted_from_playlist">Track successfully deleted from playlist</string>
+    <string name="there_is_no_track_list_to_share_in_this_playlist">There is no track list to share in this playlist.</string>
+    <string name="edit_playlist">Edit playlist</string>
+    <string name="save">Save</string>
+    <string name="no_tracks_have_been_added_to_this_playlist_yet">No tracks have been added to this playlist yet</string>
+    <string name="create">Create</string>
 
 </resources>

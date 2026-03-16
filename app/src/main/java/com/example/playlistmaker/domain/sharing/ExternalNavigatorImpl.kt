@@ -16,6 +16,15 @@ class ExternalNavigatorImpl: ExternalNavigator {
         context.startActivity(sendIntent)
     }
 
+    override fun sharePlaylist(context: Context, message: String) {
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+        context.startActivity(sendIntent)
+    }
+
     override fun openLink(context: Context, link: String) {
         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }

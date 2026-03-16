@@ -39,18 +39,18 @@ class BtmSheetPlaylistAdapter(private val onItemClick: (Playlist) -> Unit) : Rec
 class BtmSheetPlaylistViewHolder(private val binding: ItemBottomSheetPlaylistBinding): RecyclerView.ViewHolder(binding.root) {
 
     fun bind(playlist: Playlist) {
-        Glide.with(binding.posterImg.context)
+        Glide.with(binding.miniPosterImg.context)
             .load(Uri.parse(playlist.posterUri))
             .placeholder(R.drawable.ic_track_placeholder)
             .centerCrop()
             .transform(
                 RoundedCorners(
                     TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, 8f, binding.posterImg.context.resources.displayMetrics
+                        TypedValue.COMPLEX_UNIT_DIP, 8f, binding.miniPosterImg.context.resources.displayMetrics
                     ).toInt()
                 )
             )
-            .into(binding.posterImg)
+            .into(binding.miniPosterImg)
         binding.playlistNameTv.text = playlist.name
         binding.playlistSizeTv.text = "${playlist.playlistSize}" + " tracks"
     }

@@ -2,6 +2,7 @@ package com.example.playlistmaker.domain.sharing.impl
 
 import android.content.Context
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.media.model.Playlist
 import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.model.EmailData
@@ -13,6 +14,10 @@ class SharingInteractorImpl (
 
     override fun shareApp(context: Context) {
         externalNavigator.shareLink(context, getShareAppLink())
+    }
+
+    override fun sharePlaylist(context: Context, message: String) {
+        externalNavigator.sharePlaylist(context, message)
     }
 
     override fun openTerms(context: Context) {
@@ -34,4 +39,5 @@ class SharingInteractorImpl (
     private fun getTermsLink(): String {
         return context.getString(R.string.offer_link)
     }
+
 }

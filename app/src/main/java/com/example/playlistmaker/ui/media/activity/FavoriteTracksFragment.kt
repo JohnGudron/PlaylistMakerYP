@@ -51,7 +51,7 @@ class FavoriteTracksFragment : Fragment() {
             onItemClick(track)
         }
 
-        adapter = TrackAdapter { track -> itemClickDebounce(track) }
+        adapter = TrackAdapter ({ track -> itemClickDebounce(track) }, {})
 
         binding.favoriteRecycler.adapter = adapter
         binding.favoriteRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false )

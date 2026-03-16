@@ -10,7 +10,10 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ItemTrackBinding
 import com.example.playlistmaker.domain.search.model.Track
 
-class TrackAdapter(private val onItemClick: (Track) -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
+open class TrackAdapter(
+    private val onItemClick: (Track) -> Unit,
+    private val onLongItemClick: (Track) -> Unit
+) : RecyclerView.Adapter<TrackViewHolder>() {
 
     var tracks = mutableListOf<Track>()
 
@@ -27,6 +30,10 @@ class TrackAdapter(private val onItemClick: (Track) -> Unit) : RecyclerView.Adap
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
             onItemClick(tracks[position])
+        }
+        holder.itemView.setOnLongClickListener {
+            onLongItemClick(tracks[position])
+            true
         }
     }
 

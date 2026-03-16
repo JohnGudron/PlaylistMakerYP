@@ -20,6 +20,18 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {
+
+        val tracksInPlaylistIds = playlistDao.getAllPlaylists().map {
+            playlistDbConvertor.convertToPlaylist(it).tracksIds }
+        // проверяем есть ли треки из удаляемого плейлиста в других плейлистах
+        playlist.tracksIds.forEach { trackId ->
+            var counter = 0
+            tracksInPlaylistIds.forEach { tracksInPlaylistIds ->
+                if (trackId in tracksInPlaylistIds) counter++
+            }
+            // если счетчик меньше либо равен 1, значит трек есть только в этом плейлисте и его можно удалять из БД
+            if (counter<=1) playlistTrackDao.deleteTrackById(trackId)
+        }
         playlistDao.deletePlaylist(playlistDbConvertor.convertToPlaylistEntity(playlist))
     }
 
@@ -32,6 +44,11 @@ class PlaylistRepositoryImpl(
         emit(playlistDao.getPlaylistsIds())
     }
 
+    override fun getPlaylistTracks(playlist: Playlist): Flow<List<Track>> = flow {
+        val tracks = playlistTrackDao.getAllTracks().filter { it.id in playlist.tracksIds }.map { playlistDbConvertor.convertToTrack(it) }
+        emit(tracks)
+    }
+
     override suspend fun updatePlaylist(playlist: Playlist) {
         playlistDao.updatePlaylist(playlistDbConvertor.convertToPlaylistEntity(playlist))
     }
@@ -40,5 +57,20 @@ class PlaylistRepositoryImpl(
         val ids = playlist.tracksIds + track.trackId
         playlistTrackDao.insertTrack(playlistDbConvertor.convertToPlaylistTrackEntity(track))
         playlistDao.updatePlaylist(playlistDbConvertor.convertToPlaylistEntity(playlist.copy(tracksIds = ids, playlistSize = ids.size)))
+    }
+
+    override suspend fun deleteTrackFromPlaylist(track: Track, playlist: Playlist) {
+        val updatedPlaylist =
+            playlist.copy(
+                tracksIds = playlist.tracksIds.filter { it != track.trackId },
+                playlistSize = playlist.playlistSize - 1)
+        val tracksInPlaylistList = playlistDao.getAllPlaylists().map {
+            playlistDbConvertor.convertStringToListOfLong(it.tracksIds)
+        }.filter { track.trackId in it }
+
+        if (tracksInPlaylistList.size <= 1) { // размер должен быть минимум 1, т.к. еще не обновили плейлист, в котором был трек
+            playlistTrackDao.deleteTrack(playlistDbConvertor.convertToPlaylistTrackEntity(track))
+        }
+        playlistDao.updatePlaylist(playlistDbConvertor.convertToPlaylistEntity(updatedPlaylist))
     }
 }

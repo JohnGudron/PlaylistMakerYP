@@ -23,7 +23,6 @@ class TracksRepositoryImpl (
             200 -> {
                 with(response as ItunesSearchResponse) {
 
-
                     val data = response.results.map {
                         Track(
                             it.trackName,

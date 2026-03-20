@@ -13,15 +13,18 @@ import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.media.model.Playlist
 import com.example.playlistmaker.ui.media.view_model.PlaylistAdapter
 import com.example.playlistmaker.ui.media.view_model.PlaylistsViewModel
+import com.example.playlistmaker.ui.playlist.fragment.PlaylistFragment
 import com.example.playlistmaker.ui.search.activity.SearchFragment.Companion.ITEM_CLICK_DEBOUNCE
 import com.example.playlistmaker.util.debounce
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistsFragment : Fragment() {
+class PlaylistSFragment : Fragment() {
 
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
     private val viewModel : PlaylistsViewModel by viewModel()
+    private val gson = Gson()
 
     private lateinit var itemClickDebounce: (Playlist) -> Unit
     private lateinit var playlistAdapter: PlaylistAdapter
@@ -54,7 +57,7 @@ class PlaylistsFragment : Fragment() {
 
         binding.newPlaylistBtn.setOnClickListener {
             findNavController().navigate(
-                R.id.action_mediaFragment_to_newPlaylistFragment
+                R.id.action_mediaFragment_to_editPlaylistFragment
             )
         }
     }
@@ -78,7 +81,9 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun onItemClick(playlist: Playlist) {
-        // TODO
+        findNavController().navigate(
+            R.id.action_mediaFragment_to_playlistFragment, PlaylistFragment.createArgs(gson.toJson(playlist))
+        )
     }
 
     override fun onDestroyView() {
@@ -90,6 +95,6 @@ class PlaylistsFragment : Fragment() {
 
         @JvmStatic
         fun newInstance() =
-            PlaylistsFragment()
+            PlaylistSFragment()
     }
 }

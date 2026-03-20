@@ -19,14 +19,12 @@ class PlaylistDbConvertor(private val gson: Gson) {
     )
 
     fun convertToPlaylist(playlistEntity: PlaylistEntity): Playlist {
-        val type = object : TypeToken<List<Long>>() {}.type
-
         return Playlist (
             playlistEntity.id,
             playlistEntity.name,
             playlistEntity.description,
             playlistEntity.posterUri,
-            gson.fromJson(playlistEntity.tracksIds, type),
+            convertStringToListOfLong(playlistEntity.tracksIds),
             playlistEntity.playlistSize
         )
     }
@@ -44,5 +42,25 @@ class PlaylistDbConvertor(private val gson: Gson) {
             track.country,
             track.previewUrl
         )
+    }
+
+    fun convertToTrack(playlistTrackEntity: PlaylistTrackEntity): Track {
+        return Track(
+            playlistTrackEntity.trackName,
+            playlistTrackEntity.artistName,
+            playlistTrackEntity.trackDuration,
+            playlistTrackEntity.artworkUrl100,
+            playlistTrackEntity.id,
+            playlistTrackEntity.collectionName,
+            playlistTrackEntity.releaseDate,
+            playlistTrackEntity.primaryGenreName,
+            playlistTrackEntity.country,
+            playlistTrackEntity.previewUrl
+        )
+    }
+
+    fun convertStringToListOfLong(str: String): List<Long> {
+        val type = object : TypeToken<List<Long>>() {}.type
+        return gson.fromJson(str, type)
     }
 }

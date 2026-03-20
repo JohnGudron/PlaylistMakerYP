@@ -151,7 +151,7 @@ class PlayerFragment : Fragment() {
         }
 
         binding.newPlaylistBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_playerFragment_to_newPlaylistFragment)
+            findNavController().navigate(R.id.action_playerFragment_to_editPlaylistFragment)
         }
 
         binding.backBtn.setOnClickListener {

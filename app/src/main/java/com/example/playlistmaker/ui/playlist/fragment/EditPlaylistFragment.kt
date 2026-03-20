@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.media.activity
+package com.example.playlistmaker.ui.playlist.fragment
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -13,29 +13,40 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
+import com.example.playlistmaker.databinding.FragmentEditPlaylistBinding
 import com.example.playlistmaker.domain.media.model.Playlist
-import com.example.playlistmaker.ui.media.view_model.NewPlaylistViewModel
+import com.example.playlistmaker.ui.playlist.view_model.EditPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
-class NewPlaylistFragment : Fragment() {
+class EditPlaylistFragment : Fragment() {
 
-    private var _binding: FragmentNewPlaylistBinding? = null
+    private var _binding:FragmentEditPlaylistBinding? = null
     private val binding get() = _binding!!
 
-    private var posterIsEmpty = true
-    private var posterUri: Uri? = null
-    private val viewModel: NewPlaylistViewModel by viewModel()
+    private val playlist by lazy {
+        if (this.arguments == null) null
+        else Gson().fromJson(requireArguments().getString(PlaylistFragment.PLAYLIST), Playlist::class.java)
+    }
+
+    private var isPosterChanged: Boolean = false
+    private lateinit var posterUri: Uri
+
+    private val viewModel: EditPlaylistViewModel by viewModel()
+    private val gson = Gson()
 
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+
         if (uri != null) {
             binding.playlistImg.scaleType = ImageView.ScaleType.CENTER_CROP
 
@@ -43,14 +54,8 @@ class NewPlaylistFragment : Fragment() {
                 .load(uri)
                 .placeholder(R.drawable.ic_poster_placeholder_312)
                 .into(binding.playlistImg)
-            //.centerCrop()
-                /*.transform(
-                    RoundedCorners(
-                        200)
-                )*/
-            //binding.playlistImg.setImageURI(uri)
 
-            posterIsEmpty = false
+            isPosterChanged = true
             posterUri = uri
         } else {
             Toast.makeText(
@@ -61,20 +66,25 @@ class NewPlaylistFragment : Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentNewPlaylistBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = FragmentEditPlaylistBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Check if necessary input filled, and set button enable/disable
+        setUi()
+
         binding.playlistNameInput.doAfterTextChanged { text ->
-            binding.createPlaylistBtn.isEnabled = !text.isNullOrEmpty()
+            binding.savePlaylistBtn.isEnabled = !text.isNullOrEmpty()
         }
 
         binding.playlistImg.setOnClickListener {
@@ -82,12 +92,15 @@ class NewPlaylistFragment : Fragment() {
         }
 
         binding.backBtn.setOnClickListener {
-            if (!posterIsEmpty && binding.playlistNameInput.text?.isNotEmpty() == true) {
-                showExitDialog()
-            } else closeCreatorScreen()
+            if (playlist != null) {
+                closeCreatorScreen()
+            }
+            else {
+                if (binding.playlistNameInput.text?.isNotEmpty() == true && isPosterChanged) showExitDialog()
+            }
         }
 
-        binding.createPlaylistBtn.setOnClickListener {
+        binding.savePlaylistBtn.setOnClickListener {
             val name = binding.playlistNameInput.text
 
             if (name.isNullOrEmpty()) {
@@ -97,12 +110,13 @@ class NewPlaylistFragment : Fragment() {
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                createNewPlaylist()
+                if (playlist == null) createNewPlaylist()
+                else updatePlaylistInfo()
             }
         }
     }
 
-    private fun saveImageToPrivateStorage(uri: Uri, name: String) :Uri {
+    private fun saveImageToPrivateStorage(uri: Uri, name: String) : Uri {
         val filePath =
             File(
                 requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
@@ -120,11 +134,33 @@ class NewPlaylistFragment : Fragment() {
         return file.toUri()
     }
 
+    private fun updatePlaylistInfo() {
+        val name = binding.playlistNameInput.text
+        val description = binding.playlistDescriptionInput.text.toString()
+        val newPosterUri = if (isPosterChanged) {
+            saveImageToPrivateStorage(posterUri, name.toString()).toString()
+        } else playlist?.posterUri
+
+        val updatedPlaylist = playlist?.copy(
+            name = name.toString(),
+            description = description,
+            posterUri = newPosterUri!!
+        )
+        viewModel.updatePlaylistInfo(updatedPlaylist!!)
+
+        val result = Bundle().apply {
+            putString("updated_playlist", gson.toJson(updatedPlaylist))
+        }
+        setFragmentResult("edit_playlist_request", result)
+
+        closeCreatorScreen()
+    }
+
     private fun createNewPlaylist() {
         val name = binding.playlistNameInput.text
         val description = binding.playlistDescriptionInput.text.toString()
         val newPosterUri =
-            if (!posterIsEmpty) {
+            if (isPosterChanged) {
                 saveImageToPrivateStorage(posterUri!!, name.toString()).toString()
             }
             else ""
@@ -140,10 +176,6 @@ class NewPlaylistFragment : Fragment() {
         closeCreatorScreen()
     }
 
-    private fun pickPoster() {
-        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-    }
-
     private fun showExitDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.finish_creating_playlist))
@@ -157,6 +189,33 @@ class NewPlaylistFragment : Fragment() {
             .show()
     }
 
+    private fun pickPoster() {
+        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    private fun setUi() {
+        if (playlist == null) {
+            binding.newPlaylistTv.text = getString(R.string.new_playlist)
+            binding.savePlaylistBtn.text = getString(R.string.create)
+            binding.savePlaylistBtn.isEnabled = false
+            setImage()
+        } else {
+            binding.newPlaylistTv.text = getString(R.string.edit_playlist)
+            setImage()
+            binding.playlistNameInput.setText(playlist?.name ?: "")
+            binding.playlistDescriptionInput.setText(playlist?.description ?: "")
+        }
+    }
+
+    private fun setImage() {
+        if ((playlist?.posterUri ?: "").isNotEmpty()) {
+            Glide.with(binding.playlistImg.context)
+                .load(Uri.parse(playlist?.posterUri))
+                .placeholder(R.drawable.ic_track_placeholder)
+                .into(binding.playlistImg)
+        }
+    }
+
     private fun closeCreatorScreen() {
         findNavController().navigateUp()
     }
@@ -164,5 +223,13 @@ class NewPlaylistFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        const val PLAYLIST = "playlist"
+
+        @JvmStatic
+        fun createArgs(playlist: String) =
+            bundleOf(PLAYLIST to playlist)
     }
 }

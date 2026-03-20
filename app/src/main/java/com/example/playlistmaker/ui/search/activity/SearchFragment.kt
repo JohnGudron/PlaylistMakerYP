@@ -60,8 +60,8 @@ class SearchFragment : Fragment() {
             onItemClick(track)
         }
 
-        adapter = TrackAdapter { track -> itemClickDebounce(track) }
-        historyAdapter = TrackAdapter { track -> itemClickDebounce(track) }
+        adapter = TrackAdapter ({ track -> itemClickDebounce(track) }, {})
+        historyAdapter = TrackAdapter ({ track -> itemClickDebounce(track) }, {})
 
         binding.input.setText(searchText)
 

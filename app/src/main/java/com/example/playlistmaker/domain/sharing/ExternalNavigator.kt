@@ -10,4 +10,8 @@ interface ExternalNavigator {
     fun openLink(context: Context, link: String)
 
     fun openEmail(context: Context, emailData: EmailData)
+
+    fun sharePlaylist(context: Context, message: String) {
+
+    }
 }

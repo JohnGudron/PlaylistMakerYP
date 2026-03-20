@@ -39,5 +39,14 @@
     <string name="all_unsaved_data_will">Все несохраненные данные будут утеряны</string>
     <string name="cancel">Отмена</string>
     <string name="complete">Завершить</string>
+    <string name="share">Поделиться</string>
+    <string name="edit_playlist_info">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
+    <string name="track_successfully_deleted_from_playlist">Трек успешно удален из плейлиста</string>
+    <string name="there_is_no_track_list_to_share_in_this_playlist">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="edit_playlist">Редактировать плейлист</string>
+    <string name="save">Сохранить</string>
+    <string name="no_tracks_have_been_added_to_this_playlist_yet">В этот плейлист пока не добавлено ни одного трека</string>
+    <string name="create">Создать</string>
 
 </resources>
